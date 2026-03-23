@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark-blue: #00008b;
+  --color-primary-white: #ffffff;
+  --color-primary-black: #000000;
+  --color-accent-indigo: #4F46E5;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+    background-color: #f8fafc;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-2xl;
+  }
+
+  .admin-glass-card {
+    @apply bg-slate-900/60 backdrop-blur-md border border-slate-700/50 shadow-2xl rounded-2xl;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02];
+  }
+
+  .hover-lift-sm {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02];
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #EFF6FF 50%, #dbeafe 100%);
+  }
+
+  .student-auth-gradient {
+    background: linear-gradient(135deg, #1e3a8a 0%, #e2e8f0 50%, #075985 100%);
+  }
+
+  .admin-auth-gradient {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #111827 100%);
+  }
+}
