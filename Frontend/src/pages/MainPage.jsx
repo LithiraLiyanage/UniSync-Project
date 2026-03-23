@@ -11,6 +11,7 @@ const features = [
     description: 'Smart study assistant, progress tracking & resources',
     icon: <FiBookOpen size={24} className="text-blue-400" />,
     color: 'from-black to-blue-900',
+    path: '/features/study',           // ✅
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ const features = [
     description: 'Find campus gigs, freelance work & skill-building tasks',
     icon: <FiDollarSign size={24} className="text-green-400" />,
     color: 'from-black to-emerald-900',
+    path: '/features/earn',            // ✅
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ const features = [
     description: 'Real-time shuttle tracking & smart travel planning',
     icon: <FiMap size={24} className="text-purple-400" />,
     color: 'from-black to-purple-900',
+    path: '/features/travel',          // ✅
   },
   {
     id: 4,
@@ -32,6 +35,7 @@ const features = [
     description: 'Connect with peers, join clubs & discover campus events',
     icon: <FiUsers size={24} className="text-pink-400" />,
     color: 'from-black to-pink-900',
+    path: '/features/events',          // ✅
   },
 ];
 
@@ -120,24 +124,29 @@ const MainPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <motion.div
+              <Link
+                to={feature.path}
                 key={feature.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:border-blue-200 transition-colors group cursor-pointer"
+                className="no-underline"
               >
-                <div className={`w-14 h-14 rounded-xl mb-6 flex items-center justify-center bg-gradient-to-br ${feature.color} shadow-inner`}>
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600 mb-6 flex-grow">{feature.description}</p>
-                <div className="flex items-center text-blue-600 font-medium group-hover:text-dark-blue transition-colors">
-                  Explore <FiArrowRight className="ml-2 transform group-hover:translate-x-1 transition-transform" />
-                </div>
-              </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:border-blue-200 transition-colors group cursor-pointer"
+                >
+                  <div className={`w-14 h-14 rounded-xl mb-6 flex items-center justify-center bg-gradient-to-br ${feature.color} shadow-inner`}>
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600 mb-6 flex-grow">{feature.description}</p>
+                  <div className="flex items-center text-blue-600 font-medium group-hover:text-dark-blue transition-colors">
+                    Explore <FiArrowRight className="ml-2 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </div>

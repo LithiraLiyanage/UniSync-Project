@@ -23,6 +23,12 @@ import AdminEarnSkills from './pages/AdminEarnSkills';
 import AdminTravelSmart from './pages/AdminTravelSmart';
 import AdminSocialEvents from './pages/AdminSocialEvents';
 
+// ✅ Feature preview pages (public)
+import FeatureStudyLearning from './pages/FeatureStudyLearning';
+import FeatureEarnSkills    from './pages/FeatureEarnSkills';
+import FeatureTravelSmart   from './pages/FeatureTravelSmart';
+import FeatureSocialEvents  from './pages/FeatureSocialEvents';
+
 function App() {
   return (
     <AuthContextProvider>
@@ -35,6 +41,12 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin/register" element={<AdminRegisterPage />} />
+
+            {/* ✅ Public feature preview routes */}
+            <Route path="/features/study"  element={<FeatureStudyLearning />} />
+            <Route path="/features/earn"   element={<FeatureEarnSkills />} />
+            <Route path="/features/travel" element={<FeatureTravelSmart />} />
+            <Route path="/features/events" element={<FeatureSocialEvents />} />
             
             <Route path="/dashboard" element={
               <ProtectedRoute allowedRole="student">
