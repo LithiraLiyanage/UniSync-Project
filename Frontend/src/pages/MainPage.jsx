@@ -7,7 +7,7 @@ import { FiBookOpen, FiDollarSign, FiMap, FiUsers, FiArrowRight } from 'react-ic
 const features = [
   {
     id: 1,
-    title: 'Study & Learning',
+    title: 'Lithira',
     description: 'Smart study assistant, progress tracking & resources',
     icon: <FiBookOpen size={24} className="text-blue-400" />,
     color: 'from-black to-blue-900',
