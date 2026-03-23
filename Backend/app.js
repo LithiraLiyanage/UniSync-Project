@@ -50,6 +50,25 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/modules', moduleRoutes);
 
+const paperRoutes = require('./routes/paperRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
+const listingRoutes = require('./routes/listingRoutes');
+const travelRoutes = require('./routes/travelRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const progressRoutes = require('./routes/progressRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+
+app.use('/api/papers', paperRoutes);
+app.use('/api/announcements', announcementRoutes);
+app.use('/api/listings', listingRoutes);
+app.use('/api', travelRoutes); // Note: handles /api/routes and /api/alerts
+app.use('/api/events', eventRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/reports', reportRoutes);
+
+app.use('/uploads', express.static('uploads'));
+
+
 // ─── Error Handling Middleware ───────────────────────────────────────────────
 // Must be registered AFTER all routes
 app.use(notFound);

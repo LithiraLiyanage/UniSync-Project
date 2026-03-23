@@ -1,21 +1,74 @@
 @import "tailwindcss";
- 
+
 @theme {
   --color-dark-blue: #00008b;
   --color-primary-white: #ffffff;
   --color-primary-black: #000000;
   --color-accent-indigo: #4F46E5;
 }
- 
+
 @layer base {
+  :root {
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --sidebar: #FFFFFF;
+    --nav: #FFFFFF;
+    --text: #0F172A;
+    --muted: #64748B;
+    --border: #E2E8F0;
+    --hover: #F1F5F9;
+    --primary: #4DA8FF;
+    --primary-light: #EFF6FF;
+    --primary-dark: #2563EB;
+    --red: #EF4444;
+    --green: #10B981;
+    --amber: #F59E0B;
+    --purple: #8B5CF6;
+    --purple-dark: #6D28D9;
+    --purple-light: #F5F3FF;
+    --shadow: 0 1px 3px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body.dark {
+    --bg: #0F0F0F;
+    --card: #1A1A1A;
+    --sidebar: #161616;
+    --nav: #161616;
+    --text: #F1F5F9;
+    --muted: #94A3B8;
+    --border: #2A2A2A;
+    --hover: #212121;
+    --primary-light: #1e3a5f;
+    --purple-light: #2D1B69;
+  }
+
   body {
-    @apply bg-gray-50 text-gray-900 font-sans antialiased;
-    background-color: #f8fafc;
+    @apply font-sans antialiased;
+    background-color: var(--bg);
+    color: var(--text);
   }
 }
- 
-/* Custom Utilities */
+
 @layer utilities {
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+  @keyframes slideUp  { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes floatCard{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  @keyframes toastIn  { from{opacity:0;transform:translateX(48px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateX(48px)} }
+  @keyframes blink    { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+  .animate-fadeUp { animation: fadeUp 0.5s ease-out forwards; }
+  .animate-fadeIn { animation: fadeIn 0.3s ease-out forwards; }
+  .animate-slideUp { animation: slideUp 0.4s ease-out forwards; }
+  .animate-floatCard { animation: floatCard 3s ease-in-out infinite; }
+  .animate-toastIn { animation: toastIn 0.3s ease-out forwards; }
+  .animate-toastOut { animation: toastOut 0.3s ease-in forwards; }
+  .animate-blink { animation: blink 1.5s infinite; }
+
   /* ── Student auth - dark navy theme ── */
   .glass-card {
     @apply backdrop-blur-xl border shadow-2xl rounded-2xl;
@@ -25,36 +78,52 @@
       0 25px 60px rgba(0, 0, 0, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
- 
   .student-auth-gradient {
-    background: linear-gradient(
-      135deg,
-      #020817 0%,
-      #0a1628 35%,
-      #0d1f3c 65%,
-      #071020 100%
-    );
+    background: linear-gradient(135deg, #020817 0%, #0a1628 35%, #0d1f3c 65%, #071020 100%);
   }
- 
+
   /* ── Admin (unchanged) ── */
   .admin-glass-card {
     @apply bg-slate-900/60 backdrop-blur-md border border-slate-700/50 shadow-2xl rounded-2xl;
   }
- 
   .admin-auth-gradient {
     background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #111827 100%);
   }
- 
+
   /* ── Shared utilities (unchanged) ── */
   .hero-gradient {
     background: linear-gradient(135deg, #ffffff 0%, #EFF6FF 50%, #dbeafe 100%);
   }
- 
+
   .hover-lift {
     @apply transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02];
   }
- 
+
   .hover-lift-sm {
     @apply transition-transform duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02];
   }
+
+  /* Admin purple theme */
+  .sidebar.admin-sidebar .logo-icon    { background: linear-gradient(135deg,#8B5CF6,#6D28D9) }
+  .sidebar.admin-sidebar .nav-item.active { background: #8B5CF6; box-shadow: 0 4px 12px rgba(139,92,246,.35) }
+  .sidebar.admin-sidebar .user-card    { background: #F5F3FF }
+  .user-avatar.admin-ava               { background: linear-gradient(135deg,#8B5CF6,#6D28D9) }
+
+  /* Tables */
+  .data-table { @apply w-full text-left border-collapse; }
+  .data-table th { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; padding:10px 14px; border-bottom:2px solid var(--border) }
+  .data-table td { padding:12px 14px; border-bottom:1px solid var(--border); font-size:13px }
+  .data-table tr:hover td { background: var(--hover) }
+
+  /* Status badges */
+  .tbl-green { background:#D1FAE5; color:#065F46 }
+  .tbl-red   { background:#FEE2E2; color:#991B1B }
+  .tbl-amber { background:#FEF3C7; color:#92400E }
+  .tbl-blue  { background:var(--primary-light); color:var(--primary) }
+
+  /* Toasts */
+  .toast.success { background: linear-gradient(135deg,#10B981,#059669) }
+  .toast.error   { background: linear-gradient(135deg,#EF4444,#DC2626) }
+  .toast.info    { background: linear-gradient(135deg,#4DA8FF,#2563EB) }
+  .toast.warning { background: linear-gradient(135deg,#F59E0B,#D97706) }
 }
