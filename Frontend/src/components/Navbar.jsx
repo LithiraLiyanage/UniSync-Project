@@ -1,11 +1,13 @@
 import { useState, useContext } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FiMenu, FiX, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiLogOut, FiSun, FiMoon } from 'react-icons/fi';
+import { ThemeContext } from '../context/ThemeContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, token, logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -56,6 +58,13 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center space-x-4">
+              <button 
+                onClick={toggleTheme} 
+                className="p-2 text-gray-500 hover:text-dark-blue transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                title="Toggle Theme"
+              >
+                {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
+              </button>
               {!token ? (
                 <>
                   <Link 
@@ -139,6 +148,15 @@ const Navbar = () => {
             
             {/* Mobile Auth Options */}
             <div className="pt-4 pb-2 border-t border-gray-200">
+              <div className="px-3 mb-4 flex justify-end">
+                <button 
+                  onClick={toggleTheme} 
+                  className="p-2 flex items-center gap-2 text-gray-600 bg-gray-50 rounded-lg w-full justify-center border border-gray-200"
+                >
+                  {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
+                  <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
+              </div>
               {!token ? (
                 <div className="flex flex-col space-y-2 px-3">
                   <Link

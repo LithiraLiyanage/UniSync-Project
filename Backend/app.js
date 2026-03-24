@@ -57,6 +57,7 @@ const travelRoutes = require('./routes/travelRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const resourceRoutes = require('./routes/resourceRoutes');
 
 app.use('/api/papers', paperRoutes);
 app.use('/api/announcements', announcementRoutes);
@@ -65,6 +66,7 @@ app.use('/api', travelRoutes); // Note: handles /api/routes and /api/alerts
 app.use('/api/events', eventRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/resources', resourceRoutes);
 
 app.use('/uploads', express.static('uploads'));
 
