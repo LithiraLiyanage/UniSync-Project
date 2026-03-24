@@ -20,8 +20,8 @@ export const AuthContextProvider = ({ children }) => {
       }
       
       try {
-        const { data } = await api.get('/api/auth/profile');
-        setUser(data.user);
+        const { data } = await api.get('/api/auth/me');
+        setUser(data.data);
       } catch (error) {
         // Handled by axios interceptor if 401, but we reset state here
         setToken(null);
@@ -40,14 +40,17 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/login', { email, password, role });
       
-      setToken(data.token);
-      setUser(data.user); // Should contain role
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', role);
+      const resData = data.data;
+      const userRole = resData.role;
+
+      setToken(resData.token);
+      setUser(resData); 
+      localStorage.setItem('token', resData.token);
+      localStorage.setItem('role', userRole);
       
-      if (role === 'student') {
+      if (userRole === 'student') {
         navigate('/dashboard');
-      } else if (role === 'admin') {
+      } else if (userRole === 'admin') {
         navigate('/admin/dashboard');
       }
       
@@ -63,15 +66,18 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/register', { ...userData, role });
       
+      const resData = data.data;
+      const userRole = resData.role;
+
       // Auto login after success
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', role);
+      setToken(resData.token);
+      setUser(resData);
+      localStorage.setItem('token', resData.token);
+      localStorage.setItem('role', userRole);
       
-      if (role === 'student') {
+      if (userRole === 'student') {
         navigate('/dashboard');
-      } else if (role === 'admin') {
+      } else if (userRole === 'admin') {
         navigate('/admin/dashboard');
       }
       
