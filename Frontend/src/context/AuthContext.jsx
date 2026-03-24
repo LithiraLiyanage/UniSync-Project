@@ -54,10 +54,17 @@ export const AuthContextProvider = ({ children }) => {
       setUser(userPayload); 
       localStorage.setItem('token', tkn);
       localStorage.setItem('role', role);
+      const resData = data.data;
+      const userRole = resData.role;
+
+      setToken(resData.token);
+      setUser(resData); 
+      localStorage.setItem('token', resData.token);
+      localStorage.setItem('role', userRole);
       
-      if (role === 'student') {
+      if (userRole === 'student') {
         navigate('/dashboard');
-      } else if (role === 'admin') {
+      } else if (userRole === 'admin') {
         navigate('/admin/dashboard');
       }
       
@@ -81,10 +88,18 @@ export const AuthContextProvider = ({ children }) => {
       setUser(userPayload);
       localStorage.setItem('token', tkn);
       localStorage.setItem('role', role);
+      const resData = data.data;
+      const userRole = resData.role;
+
+      // Auto login after success
+      setToken(resData.token);
+      setUser(resData);
+      localStorage.setItem('token', resData.token);
+      localStorage.setItem('role', userRole);
       
-      if (role === 'student') {
+      if (userRole === 'student') {
         navigate('/dashboard');
-      } else if (role === 'admin') {
+      } else if (userRole === 'admin') {
         navigate('/admin/dashboard');
       }
       
