@@ -7,14 +7,21 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [token, setToken] = useState(() => {
+    const t = localStorage.getItem('token');
+    return t === 'undefined' ? null : (t || null);
+  });
   const [loading, setLoading] = useState(true);
   
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkUser = async () => {
-      if (!token) {
+      if (!token || token === 'undefined') {
+        if (token === 'undefined') {
+          localStorage.removeItem('token');
+          setToken(null);
+        }
         setLoading(false);
         return;
       }
@@ -40,6 +47,13 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/login', { email, password, role });
       
+      const userPayload = data.data;
+      const tkn = userPayload.token;
+
+      setToken(tkn);
+      setUser(userPayload); 
+      localStorage.setItem('token', tkn);
+      localStorage.setItem('role', role);
       const resData = data.data;
       const userRole = resData.role;
 
@@ -66,6 +80,14 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/register', { ...userData, role });
       
+      const userPayload = data.data;
+      const tkn = userPayload.token;
+
+      // Auto login after success
+      setToken(tkn);
+      setUser(userPayload);
+      localStorage.setItem('token', tkn);
+      localStorage.setItem('role', role);
       const resData = data.data;
       const userRole = resData.role;
 
