@@ -7,21 +7,28 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [token, setToken] = useState(() => {
+    const t = localStorage.getItem('token');
+    return t === 'undefined' ? null : (t || null);
+  });
   const [loading, setLoading] = useState(true);
   
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkUser = async () => {
-      if (!token) {
+      if (!token || token === 'undefined') {
+        if (token === 'undefined') {
+          localStorage.removeItem('token');
+          setToken(null);
+        }
         setLoading(false);
         return;
       }
       
       try {
-        const { data } = await api.get('/api/auth/profile');
-        setUser(data.user);
+        const { data } = await api.get('/api/auth/me');
+        setUser(data.data);
       } catch (error) {
         // Handled by axios interceptor if 401, but we reset state here
         setToken(null);
@@ -40,9 +47,12 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/login', { email, password, role });
       
-      setToken(data.token);
-      setUser(data.user); // Should contain role
-      localStorage.setItem('token', data.token);
+      const userPayload = data.data;
+      const tkn = userPayload.token;
+
+      setToken(tkn);
+      setUser(userPayload); 
+      localStorage.setItem('token', tkn);
       localStorage.setItem('role', role);
       
       if (role === 'student') {
@@ -63,10 +73,13 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/register', { ...userData, role });
       
+      const userPayload = data.data;
+      const tkn = userPayload.token;
+
       // Auto login after success
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
+      setToken(tkn);
+      setUser(userPayload);
+      localStorage.setItem('token', tkn);
       localStorage.setItem('role', role);
       
       if (role === 'student') {
