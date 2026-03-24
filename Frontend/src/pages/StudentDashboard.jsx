@@ -26,7 +26,7 @@ const getGreeting = () => {
 };
 
 const modules = [
-  { id: 1, title: 'Study & Learning', description: 'Smart study assistant, progress tracking & resources', icon: <FiBookOpen size={28} className="text-primary" />, link: '/study', border: 'border-primary-light' },
+  { id: 1, title: 'Study & Learning', description: 'Smart study assistant, progress tracking & resources', icon: <FiBookOpen size={28} className="text-primary" />, link: '/study-learning', border: 'border-primary-light' },
   { id: 2, title: 'Earn & Skills', description: 'Find campus gigs, freelance work & skill-building tasks', icon: <FiDollarSign size={28} className="text-green" />, link: '/earn', border: 'border-green' },
   { id: 3, title: 'Travel Smart', description: 'Real-time shuttle tracking & smart travel planning', icon: <FiMap size={28} className="text-amber" />, link: '/travel', border: 'border-amber' },
   { id: 4, title: 'Social & Events', description: 'Connect with peers, join clubs & discover campus events', icon: <FiUsers size={28} className="text-purple" />, link: '/events', border: 'border-purple' }

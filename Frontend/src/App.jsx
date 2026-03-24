@@ -13,7 +13,7 @@ import StudentDashboard from './pages/StudentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 
-import StudentStudyBuddy from './pages/StudentStudyBuddy';
+import StudyLearningLayout from './pages/StudyLearning/StudyLearningLayout';
 import StudentEarnSkills from './pages/StudentEarnSkills';
 import StudentTravelSmart from './pages/StudentTravelSmart';
 import StudentSocialEvents from './pages/StudentSocialEvents';
@@ -53,9 +53,9 @@ function App() {
                 <StudentDashboard />
               </ProtectedRoute>
             } />
-            <Route path="/study" element={
+            <Route path="/study-learning/*" element={
               <ProtectedRoute allowedRole="student">
-                <StudentStudyBuddy />
+                <StudyLearningLayout />
               </ProtectedRoute>
             } />
             <Route path="/earn" element={
