@@ -63,10 +63,10 @@ const HomeDashboard = () => {
   };
 
   const quickAccess = [
-    { id: 1, title: 'AI Chatbot', desc: 'Ask study questions', icon: <FiMessageSquare size={24} className="text-primary" />, link: '/study-learning/chatbot' },
-    { id: 2, title: 'Progress', desc: 'View GPA & charts', icon: <FiTrendingUp size={24} className="text-green" />, link: '/study-learning/progress' },
-    { id: 3, title: 'Past Papers', desc: 'Download old exams', icon: <FiFileText size={24} className="text-purple" />, link: '/study-learning/papers' },
-    { id: 4, title: 'Resources', desc: 'Find study materials', icon: <FiLink size={24} className="text-amber" />, link: '/study-learning/resources' }
+    { id: 1, title: 'AI Chatbot', desc: 'Ask study questions', icon: <FiMessageSquare size={24} className="text-blue-500" />, iconBg: 'bg-blue-100 dark:bg-blue-900/50', link: '/study-learning/chatbot' },
+    { id: 2, title: 'Progress', desc: 'View GPA & charts', icon: <FiTrendingUp size={24} className="text-green-500" />, iconBg: 'bg-green-100 dark:bg-green-900/50', link: '/study-learning/progress' },
+    { id: 3, title: 'Past Papers', desc: 'Download old exams', icon: <FiFileText size={24} className="text-purple-500" />, iconBg: 'bg-purple-100 dark:bg-purple-900/50', link: '/study-learning/papers' },
+    { id: 4, title: 'Resources', desc: 'Find study materials', icon: <FiLink size={24} className="text-amber-500" />, iconBg: 'bg-amber-100 dark:bg-amber-900/50', link: '/study-learning/resources' }
   ];
 
   return (
@@ -74,7 +74,7 @@ const HomeDashboard = () => {
       
       {/* Header Section */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <h2 className="text-4xl font-extrabold tracking-tight text-gray-800 dark:text-white flex items-center">
+        <h2 className="text-4xl font-extrabold tracking-tight text-black dark:text-black flex items-center">
           {getGreeting()}, <span className="text-blue-600 dark:text-blue-400 ml-2">{user?.name?.split(' ')[0] || 'Student'}</span> <span className="ml-3 wave-emoji">👋</span>
         </h2>
         <p className="mt-2 text-gray-500 dark:text-gray-400 font-medium text-lg">
@@ -87,8 +87,8 @@ const HomeDashboard = () => {
         {/* Modules Card */}
         <div className="bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-blue-200 dark:border-blue-800/50 group">
           <div>
-            <h4 className="text-blue-800 dark:text-blue-300 text-sm font-bold uppercase tracking-wider mb-1">Modules</h4>
-            <div className="text-4xl font-extrabold text-blue-900 dark:text-blue-100 mt-2">6</div>
+            <h4 className="text-blue-900 dark:text-blue-900 text-sm font-bold uppercase tracking-wider mb-1">Modules</h4>
+            <div className="text-4xl font-extrabold text-white mt-2">6</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiFolder size={32} />
@@ -98,8 +98,8 @@ const HomeDashboard = () => {
         {/* Past Papers Card */}
         <div className="bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-green-200 dark:border-green-800/50 group">
           <div>
-            <h4 className="text-green-800 dark:text-green-300 text-sm font-bold uppercase tracking-wider mb-1">Past Papers</h4>
-            <div className="text-4xl font-extrabold text-green-900 dark:text-green-100 mt-2">14</div>
+            <h4 className="text-green-900 dark:text-green-900 text-sm font-bold uppercase tracking-wider mb-1">Past Papers</h4>
+            <div className="text-4xl font-extrabold text-white mt-2">14</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-green-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiFileText size={32} />
@@ -109,8 +109,8 @@ const HomeDashboard = () => {
         {/* GPA Card */}
         <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-yellow-200 dark:border-yellow-800/50 group">
           <div>
-            <h4 className="text-yellow-800 dark:text-yellow-300 text-sm font-bold uppercase tracking-wider mb-1">Current GPA</h4>
-            <div className="text-4xl font-extrabold text-yellow-900 dark:text-yellow-100 mt-2">3.2</div>
+            <h4 className="text-orange-700 dark:text-orange-700 text-sm font-bold uppercase tracking-wider mb-1">Current GPA</h4>
+            <div className="text-4xl font-extrabold text-white mt-2">3.2</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-yellow-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiAward size={32} />
@@ -120,8 +120,8 @@ const HomeDashboard = () => {
         {/* Notifications Card */}
         <div className="bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-red-200 dark:border-red-800/50 group">
           <div>
-            <h4 className="text-red-800 dark:text-red-300 text-sm font-bold uppercase tracking-wider mb-1">Alerts</h4>
-            <div className="text-4xl font-extrabold text-red-900 dark:text-red-100 mt-2">3</div>
+            <h4 className="text-red-900 dark:text-red-900 text-sm font-bold uppercase tracking-wider mb-1">Alerts</h4>
+            <div className="text-4xl font-extrabold text-white mt-2">3</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-red-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiBell size={32} />
@@ -182,7 +182,7 @@ const HomeDashboard = () => {
                 whileHover={{ y: -6, scale: 1.03 }}
                 className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:border-blue-400 p-6 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 h-full flex items-center group cursor-pointer"
               >
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gray-50 dark:bg-gray-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 mr-5 shrink-0 transition-colors shadow-sm">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${item.iconBg} group-hover:scale-110 mr-5 shrink-0 transition-all shadow-sm`}>
                   <div className="transition-transform group-hover:scale-110">
                     {item.icon}
                   </div>
