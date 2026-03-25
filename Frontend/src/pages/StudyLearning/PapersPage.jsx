@@ -1,65 +1,130 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiDownload, FiPlus, FiSearch, FiFileText } from 'react-icons/fi';
+import { FiDownload, FiPlus, FiSearch, FiFileText, FiX } from 'react-icons/fi';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
 
+// Per-theme color definitions for each accent
 const COLOR_THEMES = [
   {
-    badge: 'bg-violet-500',
-    codeBg: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
-    btnHover: 'hover:bg-violet-500 hover:border-violet-500',
-    iconColor: 'text-violet-400',
-    accent: 'before:bg-violet-500',
+    // violet
+    badgeHex:       '#7c3aed',
+    badgeDark:      '#a78bfa',
+    codeBgLight:    '#f5f3ff',
+    codeTextLight:  '#5b21b6',
+    codeBorderLight:'#ddd6fe',
+    codeBgDark:     'rgba(109,40,217,0.18)',
+    codeTextDark:   '#c4b5fd',
+    codeBorderDark: 'rgba(109,40,217,0.35)',
+    topBar:         '#7c3aed',
+    iconOpacity:    0.07,
+    btnBg:          '#7c3aed',
+    btnHover:       '#6d28d9',
   },
   {
-    badge: 'bg-sky-500',
-    codeBg: 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
-    btnHover: 'hover:bg-sky-500 hover:border-sky-500',
-    iconColor: 'text-sky-400',
-    accent: 'before:bg-sky-500',
+    // sky
+    badgeHex:       '#0ea5e9',
+    badgeDark:      '#38bdf8',
+    codeBgLight:    '#f0f9ff',
+    codeTextLight:  '#0369a1',
+    codeBorderLight:'#bae6fd',
+    codeBgDark:     'rgba(14,165,233,0.18)',
+    codeTextDark:   '#7dd3fc',
+    codeBorderDark: 'rgba(14,165,233,0.35)',
+    topBar:         '#0ea5e9',
+    iconOpacity:    0.07,
+    btnBg:          '#0ea5e9',
+    btnHover:       '#0284c7',
   },
   {
-    badge: 'bg-emerald-500',
-    codeBg: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
-    btnHover: 'hover:bg-emerald-500 hover:border-emerald-500',
-    iconColor: 'text-emerald-400',
-    accent: 'before:bg-emerald-500',
+    // emerald
+    badgeHex:       '#10b981',
+    badgeDark:      '#34d399',
+    codeBgLight:    '#f0fdf4',
+    codeTextLight:  '#065f46',
+    codeBorderLight:'#a7f3d0',
+    codeBgDark:     'rgba(16,185,129,0.18)',
+    codeTextDark:   '#6ee7b7',
+    codeBorderDark: 'rgba(16,185,129,0.35)',
+    topBar:         '#10b981',
+    iconOpacity:    0.07,
+    btnBg:          '#10b981',
+    btnHover:       '#059669',
   },
   {
-    badge: 'bg-rose-500',
-    codeBg: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
-    btnHover: 'hover:bg-rose-500 hover:border-rose-500',
-    iconColor: 'text-rose-400',
-    accent: 'before:bg-rose-500',
+    // rose
+    badgeHex:       '#f43f5e',
+    badgeDark:      '#fb7185',
+    codeBgLight:    '#fff1f2',
+    codeTextLight:  '#9f1239',
+    codeBorderLight:'#fecdd3',
+    codeBgDark:     'rgba(244,63,94,0.18)',
+    codeTextDark:   '#fda4af',
+    codeBorderDark: 'rgba(244,63,94,0.35)',
+    topBar:         '#f43f5e',
+    iconOpacity:    0.07,
+    btnBg:          '#f43f5e',
+    btnHover:       '#e11d48',
   },
   {
-    badge: 'bg-amber-500',
-    codeBg: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-    btnHover: 'hover:bg-amber-500 hover:border-amber-500',
-    iconColor: 'text-amber-400',
-    accent: 'before:bg-amber-500',
+    // amber
+    badgeHex:       '#f59e0b',
+    badgeDark:      '#fbbf24',
+    codeBgLight:    '#fffbeb',
+    codeTextLight:  '#92400e',
+    codeBorderLight:'#fde68a',
+    codeBgDark:     'rgba(245,158,11,0.18)',
+    codeTextDark:   '#fcd34d',
+    codeBorderDark: 'rgba(245,158,11,0.35)',
+    topBar:         '#f59e0b',
+    iconOpacity:    0.07,
+    btnBg:          '#f59e0b',
+    btnHover:       '#d97706',
   },
   {
-    badge: 'bg-fuchsia-500',
-    codeBg: 'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300',
-    btnHover: 'hover:bg-fuchsia-500 hover:border-fuchsia-500',
-    iconColor: 'text-fuchsia-400',
-    accent: 'before:bg-fuchsia-500',
+    // fuchsia
+    badgeHex:       '#d946ef',
+    badgeDark:      '#e879f9',
+    codeBgLight:    '#fdf4ff',
+    codeTextLight:  '#86198f',
+    codeBorderLight:'#f5d0fe',
+    codeBgDark:     'rgba(217,70,239,0.18)',
+    codeTextDark:   '#f0abfc',
+    codeBorderDark: 'rgba(217,70,239,0.35)',
+    topBar:         '#d946ef',
+    iconOpacity:    0.07,
+    btnBg:          '#d946ef',
+    btnHover:       '#c026d3',
   },
   {
-    badge: 'bg-teal-500',
-    codeBg: 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300',
-    btnHover: 'hover:bg-teal-500 hover:border-teal-500',
-    iconColor: 'text-teal-400',
-    accent: 'before:bg-teal-500',
+    // teal
+    badgeHex:       '#14b8a6',
+    badgeDark:      '#2dd4bf',
+    codeBgLight:    '#f0fdfa',
+    codeTextLight:  '#0f766e',
+    codeBorderLight:'#99f6e4',
+    codeBgDark:     'rgba(20,184,166,0.18)',
+    codeTextDark:   '#5eead4',
+    codeBorderDark: 'rgba(20,184,166,0.35)',
+    topBar:         '#14b8a6',
+    iconOpacity:    0.07,
+    btnBg:          '#14b8a6',
+    btnHover:       '#0d9488',
   },
   {
-    badge: 'bg-orange-500',
-    codeBg: 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
-    btnHover: 'hover:bg-orange-500 hover:border-orange-500',
-    iconColor: 'text-orange-400',
-    accent: 'before:bg-orange-500',
+    // orange
+    badgeHex:       '#f97316',
+    badgeDark:      '#fb923c',
+    codeBgLight:    '#fff7ed',
+    codeTextLight:  '#9a3412',
+    codeBorderLight:'#fed7aa',
+    codeBgDark:     'rgba(249,115,22,0.18)',
+    codeTextDark:   '#fdba74',
+    codeBorderDark: 'rgba(249,115,22,0.35)',
+    topBar:         '#f97316',
+    iconOpacity:    0.07,
+    btnBg:          '#f97316',
+    btnHover:       '#ea580c',
   },
 ];
 
@@ -72,25 +137,19 @@ const defaultPapers = [
   { _id: '6', module: { code: 'CS206', moduleName: 'Math' }, year: 2025, semester: 1 },
 ];
 
-const PapersPage = () => {
+const PapersPage = ({ isDark = false }) => {
   const [papers, setPapers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPapers();
-  }, []);
+  useEffect(() => { fetchPapers(); }, []);
 
   const fetchPapers = async () => {
     try {
       const res = await api.get('/api/papers');
-      if (res.data.data.length === 0) {
-        setPapers(defaultPapers);
-      } else {
-        setPapers(res.data.data);
-      }
-    } catch (err) {
+      setPapers(res.data.data.length === 0 ? defaultPapers : res.data.data);
+    } catch {
       toast.error('Failed to load past papers');
       setPapers(defaultPapers);
     } finally {
@@ -98,146 +157,339 @@ const PapersPage = () => {
     }
   };
 
-  const handleDownload = (paperId) => {
-    toast.success('Downloading past paper...');
-  };
+  const handleDownload = (paperId) => toast.success('Downloading past paper...');
 
   const filteredPapers = papers.filter(p => {
-    const modName = p.module?.moduleName || '';
-    const modCode = p.module?.code || '';
-    const search = searchTerm.toLowerCase();
-    return modName.toLowerCase().includes(search) ||
-      modCode.toLowerCase().includes(search) ||
-      p.year.toString().includes(search);
+    const s = searchTerm.toLowerCase();
+    return (p.module?.moduleName || '').toLowerCase().includes(s)
+      || (p.module?.code || '').toLowerCase().includes(s)
+      || p.year.toString().includes(s);
   });
 
-  return (
-    <div className="space-y-6 animate-fade-in pb-10">
+  // ── Theme tokens (passed in or derived) ──────────────────────
+  const t = isDark ? {
+    searchBg:       '#0d0d14',
+    searchBorder:   '#1f1b33',
+    searchText:     '#f3f4f6',
+    searchPlaceholder: '#4b5563',
+    searchFocusBorder: '#7c3aed',
+    cardBg:         '#0d0d14',
+    cardBorder:     '#1f1b33',
+    cardShadow:     '0 4px 24px rgba(0,0,0,0.4)',
+    cardHoverShadow:'0 8px 32px rgba(0,0,0,0.5)',
+    titleClr:       '#f3f4f6',
+    semBg:          'rgba(244,63,94,0.12)',
+    semText:        '#fda4af',
+    semBorder:      'rgba(244,63,94,0.3)',
+    emptyIcon:      '#4b5563',
+    emptyText:      '#6b7280',
+    modalBg:        '#0d0d14',
+    modalBorder:    '#1f1b33',
+    modalTitle:     '#f3f4f6',
+    labelClr:       '#9ca3af',
+    inputBg:        '#08080f',
+    inputBorder:    '#1f1b33',
+    inputText:      '#f3f4f6',
+    inputFocus:     '#7c3aed',
+    dividerClr:     '#1f1b33',
+    cancelBg:       '#1f1b33',
+    cancelText:     '#9ca3af',
+    cancelHover:    '#2d2a3e',
+    uploadBtn:      'linear-gradient(135deg, #6d28d9, #7c3aed)',
+  } : {
+    searchBg:       '#ffffff',
+    searchBorder:   '#e2e8f0',
+    searchText:     '#1e293b',
+    searchPlaceholder: '#94a3b8',
+    searchFocusBorder: '#7c3aed',
+    cardBg:         '#ffffff',
+    cardBorder:     '#e2e8f0',
+    cardShadow:     '0 2px 12px rgba(15,23,42,0.07)',
+    cardHoverShadow:'0 8px 28px rgba(15,23,42,0.12)',
+    titleClr:       '#1e293b',
+    semBg:          '#fff1f2',
+    semText:        '#be123c',
+    semBorder:      '#fecdd3',
+    emptyIcon:      '#cbd5e1',
+    emptyText:      '#94a3b8',
+    modalBg:        '#ffffff',
+    modalBorder:    '#e2e8f0',
+    modalTitle:     '#0f172a',
+    labelClr:       '#64748b',
+    inputBg:        '#f8fafc',
+    inputBorder:    '#e2e8f0',
+    inputText:      '#1e293b',
+    inputFocus:     '#7c3aed',
+    dividerClr:     '#e2e8f0',
+    cancelBg:       '#f1f5f9',
+    cancelText:     '#64748b',
+    cancelHover:    '#e2e8f0',
+    uploadBtn:      'linear-gradient(135deg, #6d28d9, #7c3aed)',
+  };
 
-      {/* Top Bar */}
+  return (
+    <div className="space-y-6 pb-10">
+
+      {/* ── Top Bar ── */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="relative w-full max-w-sm">
-          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted" />
+          <FiSearch
+            size={15}
+            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: t.searchPlaceholder }}
+          />
           <input
             type="text"
             placeholder="Search by module or year..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-border rounded-lg w-full focus:outline-none focus:border-primary bg-card text-text"
+            onChange={e => setSearchTerm(e.target.value)}
+            className="pl-9 pr-4 py-2 rounded-lg w-full focus:outline-none transition-colors text-sm"
+            style={{
+              background: t.searchBg,
+              border: `1px solid ${t.searchBorder}`,
+              color: t.searchText,
+            }}
+            onFocus={e => e.target.style.borderColor = t.searchFocusBorder}
+            onBlur={e => e.target.style.borderColor = t.searchBorder}
           />
         </div>
         <button
           onClick={() => setShowUploadModal(true)}
-          className="w-full sm:w-auto flex justify-center items-center bg-purple text-white px-5 py-2.5 rounded-lg font-bold hover:bg-purple-dark transition-colors shadow-sm"
+          className="w-full sm:w-auto flex justify-center items-center px-5 py-2.5 rounded-lg font-bold transition-all text-white shadow-sm gap-2 text-sm"
+          style={{ background: t.uploadBtn, boxShadow: '0 4px 14px rgba(109,40,217,0.35)' }}
         >
-          <FiPlus className="mr-2" /> Upload Paper
+          <FiPlus size={16} /> Upload Paper
         </button>
       </div>
 
-      {/* Papers Grid */}
+      {/* ── Papers Grid ── */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-10 h-10 border-4 border-purple/20 border-t-purple rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-4 rounded-full animate-spin"
+            style={{ borderColor: 'rgba(124,58,237,0.15)', borderTopColor: '#7c3aed' }} />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredPapers.map((p, i) => {
             const theme = COLOR_THEMES[i % COLOR_THEMES.length];
+            const badge        = isDark ? theme.badgeDark  : theme.badgeHex;
+            const codeBg       = isDark ? theme.codeBgDark       : theme.codeBgLight;
+            const codeText     = isDark ? theme.codeTextDark     : theme.codeTextLight;
+            const codeBorder   = isDark ? theme.codeBorderDark   : theme.codeBorderLight;
+
             return (
               <motion.div
                 key={p._id || i}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-card border border-border p-5 rounded-xl shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center h-full relative overflow-hidden"
+                whileHover={{ y: -4, boxShadow: `0 12px 32px rgba(0,0,0,0.15)` }}
+                className="relative overflow-hidden p-5 rounded-xl flex flex-col items-center text-center h-full transition-all duration-200"
+                style={{
+                  background: t.cardBg,
+                  border: `1px solid ${t.cardBorder}`,
+                  boxShadow: t.cardShadow,
+                }}
               >
                 {/* Colored top accent bar */}
-                <div className={`absolute top-0 left-0 right-0 h-1 ${theme.badge}`} />
+                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-xl"
+                  style={{ background: theme.topBar }} />
 
                 {/* Faint background icon */}
-                <div className={`absolute top-0 right-0 p-3 opacity-10 ${theme.iconColor}`}>
-                  <FiFileText size={80} />
+                <div className="absolute top-2 right-2 pointer-events-none"
+                  style={{ color: theme.topBar, opacity: theme.iconOpacity }}>
+                  <FiFileText size={72} />
                 </div>
 
                 {/* Year + Semester badges */}
-                <div className="flex gap-2 mb-4 w-full justify-center relative z-10 mt-2">
-                  <span className={`text-xs font-bold px-2.5 py-1 rounded-md text-white ${theme.badge}`}>
+                <div className="flex gap-2 mb-4 w-full justify-center relative z-10 mt-3">
+                  {/* Year badge — uses theme color */}
+                  <span
+                    className="text-xs font-bold px-2.5 py-1 rounded-md text-white"
+                    style={{ background: badge }}
+                  >
                     {p.year}
                   </span>
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-md text-red bg-red/10 border border-red/20">
+                  {/* Semester badge */}
+                  <span
+                    className="text-xs font-bold px-2.5 py-1 rounded-md"
+                    style={{
+                      background: t.semBg,
+                      color: t.semText,
+                      border: `1px solid ${t.semBorder}`,
+                    }}
+                  >
                     Sem {p.semester}
                   </span>
                 </div>
 
-                {/* Module code */}
-                <div className={`mb-2 text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wide relative z-10 ${theme.codeBg}`}>
+                {/* ── Module code badge — highlighted ── */}
+                <div
+                  className="mb-3 text-xs font-bold px-3 py-1 rounded-lg uppercase tracking-widest relative z-10 transition-colors"
+                  style={{
+                    background: codeBg,
+                    color: codeText,
+                    border: `1px solid ${codeBorder}`,
+                    letterSpacing: '0.1em',
+                  }}
+                >
                   {p.module?.code || 'CSXXX'}
                 </div>
 
                 {/* Module name */}
-                <h3 className="text-md font-bold text-text mb-6 flex-grow relative z-10">
+                <h3
+                  className="text-sm font-bold mb-6 flex-grow relative z-10 leading-snug"
+                  style={{ color: t.titleClr }}
+                >
                   {p.module?.moduleName || 'Unknown Module'}
                 </h3>
 
                 {/* Download button */}
                 <button
                   onClick={() => handleDownload(p._id)}
-                  className={`w-full flex justify-center items-center py-2.5 font-bold rounded-lg border transition-all shadow-sm relative z-10 text-white ${theme.badge} border-transparent hover:opacity-90`}
+                  className="w-full flex justify-center items-center py-2.5 font-bold rounded-lg transition-all relative z-10 text-white text-sm gap-2"
+                  style={{
+                    background: theme.topBar,
+                    boxShadow: `0 4px 12px ${isDark ? theme.codeBorderDark : theme.codeBorderLight}`,
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                 >
-                  <FiDownload className="mr-2" /> Download File
+                  <FiDownload size={14} /> Download File
                 </button>
               </motion.div>
             );
           })}
 
           {filteredPapers.length === 0 && (
-            <div className="col-span-full py-16 text-center text-muted">
-              <FiFileText size={48} className="mx-auto mb-4 opacity-20" />
-              <p>No past papers found matching "{searchTerm}"</p>
+            <div className="col-span-full py-16 text-center">
+              <FiFileText size={48} className="mx-auto mb-4" style={{ color: t.emptyIcon, opacity: 0.4 }} />
+              <p style={{ color: t.emptyText }}>No past papers found matching "{searchTerm}"</p>
             </div>
           )}
         </div>
       )}
 
-      {/* Upload Paper Modal */}
+      {/* ── Upload Modal ── */}
       <AnimatePresence>
         {showUploadModal && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+            onClick={e => e.target === e.currentTarget && setShowUploadModal(false)}
           >
             <motion.div
               initial={{ y: 30, scale: 0.95 }} animate={{ y: 0, scale: 1 }} exit={{ y: 30, scale: 0.95 }}
-              className="bg-card border border-border w-full max-w-md rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md rounded-2xl p-6 shadow-2xl"
+              style={{ background: t.modalBg, border: `1px solid ${t.modalBorder}` }}
             >
-              <h2 className="text-2xl font-bold mb-6 text-text">Upload Past Paper</h2>
-              <form onSubmit={(e) => { e.preventDefault(); toast.success('Upload started!'); setShowUploadModal(false); }} className="space-y-4">
+              {/* Modal header */}
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold" style={{ color: t.modalTitle }}>Upload Past Paper</h2>
+                <button
+                  onClick={() => setShowUploadModal(false)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                  style={{ background: t.cancelBg, color: t.cancelText }}
+                  onMouseEnter={e => e.currentTarget.style.background = t.cancelHover}
+                  onMouseLeave={e => e.currentTarget.style.background = t.cancelBg}
+                >
+                  <FiX size={14} />
+                </button>
+              </div>
+
+              <form
+                onSubmit={e => { e.preventDefault(); toast.success('Upload started!'); setShowUploadModal(false); }}
+                className="space-y-4"
+              >
+                {/* Module select */}
                 <div>
-                  <label className="block text-sm font-medium text-muted mb-1">Module</label>
-                  <select className="w-full px-4 py-2 border border-border rounded-lg bg-bg focus:outline-none focus:border-purple text-text" defaultValue="">
+                  <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                    style={{ color: t.labelClr }}>Module</label>
+                  <select
+                    defaultValue=""
+                    className="w-full px-4 py-2.5 rounded-lg focus:outline-none text-sm transition-colors"
+                    style={{
+                      background: t.inputBg,
+                      border: `1px solid ${t.inputBorder}`,
+                      color: t.inputText,
+                    }}
+                    onFocus={e => e.target.style.borderColor = t.inputFocus}
+                    onBlur={e => e.target.style.borderColor = t.inputBorder}
+                  >
                     <option value="" disabled>Select Module</option>
-                    <option value="CS201">CS201 - Data Structures</option>
-                    <option value="CS202">CS202 - DBMS</option>
-                    <option value="CS203">CS203 - OOP</option>
+                    <option value="CS201">CS201 – Data Structures</option>
+                    <option value="CS202">CS202 – DBMS</option>
+                    <option value="CS203">CS203 – OOP</option>
+                    <option value="CS204">CS204 – Networks</option>
+                    <option value="CS205">CS205 – OS</option>
+                    <option value="CS206">CS206 – Math</option>
                   </select>
                 </div>
+
+                {/* Year + Semester */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-muted mb-1">Year</label>
-                    <input type="number" defaultValue={2026} className="w-full px-4 py-2 border border-border rounded-lg bg-bg focus:outline-none focus:border-purple text-text" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-muted mb-1">Semester</label>
-                    <input type="number" defaultValue={1} className="w-full px-4 py-2 border border-border rounded-lg bg-bg focus:outline-none focus:border-purple text-text" />
-                  </div>
+                  {[
+                    { label: 'Year', name: 'year', defaultValue: 2026 },
+                    { label: 'Semester', name: 'semester', defaultValue: 1 },
+                  ].map(field => (
+                    <div key={field.name}>
+                      <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                        style={{ color: t.labelClr }}>{field.label}</label>
+                      <input
+                        type="number"
+                        defaultValue={field.defaultValue}
+                        className="w-full px-4 py-2.5 rounded-lg focus:outline-none text-sm transition-colors"
+                        style={{
+                          background: t.inputBg,
+                          border: `1px solid ${t.inputBorder}`,
+                          color: t.inputText,
+                        }}
+                        onFocus={e => e.target.style.borderColor = t.inputFocus}
+                        onBlur={e => e.target.style.borderColor = t.inputBorder}
+                      />
+                    </div>
+                  ))}
                 </div>
+
+                {/* File upload */}
                 <div>
-                  <label className="block text-sm font-medium text-muted mb-1">PDF File</label>
-                  <input type="file" accept="application/pdf" className="w-full px-4 py-2 border border-border rounded-lg bg-bg focus:outline-none focus:border-purple text-text text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-purple/10 file:text-purple hover:file:bg-purple/20 transition-colors" />
+                  <label className="block text-xs font-semibold uppercase tracking-wide mb-1.5"
+                    style={{ color: t.labelClr }}>PDF File</label>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    className="w-full px-4 py-2.5 rounded-lg text-sm transition-colors"
+                    style={{
+                      background: t.inputBg,
+                      border: `1px solid ${t.inputBorder}`,
+                      color: t.inputText,
+                    }}
+                  />
                 </div>
-                <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-border">
-                  <button type="button" onClick={() => setShowUploadModal(false)} className="px-5 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-text rounded-lg font-medium transition-colors">Cancel</button>
-                  <button type="submit" className="px-6 py-2 bg-purple text-white rounded-lg font-bold hover:bg-purple-dark shadow-sm transition-colors">Upload</button>
+
+                {/* Actions */}
+                <div className="flex justify-end gap-3 pt-4"
+                  style={{ borderTop: `1px solid ${t.dividerClr}`, marginTop: '1.5rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadModal(false)}
+                    className="px-5 py-2.5 rounded-lg font-semibold text-sm transition-colors"
+                    style={{ background: t.cancelBg, color: t.cancelText }}
+                    onMouseEnter={e => e.currentTarget.style.background = t.cancelHover}
+                    onMouseLeave={e => e.currentTarget.style.background = t.cancelBg}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-lg font-bold text-sm text-white transition-all"
+                    style={{ background: t.uploadBtn, boxShadow: '0 4px 14px rgba(109,40,217,0.35)' }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                  >
+                    Upload
+                  </button>
                 </div>
               </form>
             </motion.div>
@@ -249,3 +501,4 @@ const PapersPage = () => {
 };
 
 export default PapersPage;
+
