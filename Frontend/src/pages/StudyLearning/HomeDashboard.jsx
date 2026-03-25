@@ -58,8 +58,24 @@ const HomeDashboard = () => {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: { y: { min: 0, max: 100 } },
-    plugins: { legend: { position: 'top' } }
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: { color: '#ffffff', font: { weight: 'bold' } },
+        grid: { color: 'rgba(255,255,255,0.1)' }
+      },
+      x: {
+        ticks: { color: '#ffffff', font: { weight: 'bold' } },
+        grid: { color: 'rgba(255,255,255,0.1)' }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: { color: '#ffffff', font: { weight: 'bold' } }
+      }
+    }
   };
 
   const quickAccess = [
@@ -84,7 +100,6 @@ const HomeDashboard = () => {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Modules Card */}
         <div className="bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-blue-200 dark:border-blue-800/50 group">
           <div>
             <h4 className="text-blue-900 dark:text-blue-900 text-sm font-bold uppercase tracking-wider mb-1">Modules</h4>
@@ -95,7 +110,6 @@ const HomeDashboard = () => {
           </div>
         </div>
 
-        {/* Past Papers Card */}
         <div className="bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-green-200 dark:border-green-800/50 group">
           <div>
             <h4 className="text-green-900 dark:text-green-900 text-sm font-bold uppercase tracking-wider mb-1">Past Papers</h4>
@@ -106,7 +120,6 @@ const HomeDashboard = () => {
           </div>
         </div>
 
-        {/* GPA Card */}
         <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-yellow-200 dark:border-yellow-800/50 group">
           <div>
             <h4 className="text-orange-700 dark:text-orange-700 text-sm font-bold uppercase tracking-wider mb-1">Current GPA</h4>
@@ -117,7 +130,6 @@ const HomeDashboard = () => {
           </div>
         </div>
 
-        {/* Notifications Card */}
         <div className="bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-red-200 dark:border-red-800/50 group">
           <div>
             <h4 className="text-red-900 dark:text-red-900 text-sm font-bold uppercase tracking-wider mb-1">Alerts</h4>
@@ -202,3 +214,4 @@ const HomeDashboard = () => {
 };
 
 export default HomeDashboard;
+
