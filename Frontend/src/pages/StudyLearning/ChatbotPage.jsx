@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSend, FiCpu, FiUser, FiZap, FiSun, FiMoon } from 'react-icons/fi';
+import { FiSend, FiCpu, FiUser, FiZap, FiSun, FiMoon, FiTrash2 } from 'react-icons/fi';
 
 const suggestedQuestions = [
   "Explain Dijkstra's algorithm simply",
@@ -16,7 +16,6 @@ const mockReplies = [
   "The OSI model has 7 layers: Physical, Data Link, Network, Transport, Session, Presentation, and Application. Think of 'Please Do Not Throw Sausage Pizza Away'."
 ];
 
-// Dark mode accents
 const darkAccents = [
   { border: '#4c1d95', bg: 'rgba(109,40,217,0.12)', hoverBorder: '#7c3aed', hoverBg: 'rgba(109,40,217,0.22)', dot: '#a78bfa' },
   { border: '#134e4a', bg: 'rgba(13,148,136,0.12)', hoverBorder: '#0d9488', hoverBg: 'rgba(13,148,136,0.22)', dot: '#2dd4bf' },
@@ -24,7 +23,6 @@ const darkAccents = [
   { border: '#78350f', bg: 'rgba(217,119,6,0.12)', hoverBorder: '#d97706', hoverBg: 'rgba(217,119,6,0.22)', dot: '#fbbf24' },
 ];
 
-// Light mode accents — richer, saturated but still readable
 const lightAccents = [
   { border: '#c4b5fd', bg: 'rgba(109,40,217,0.07)', hoverBorder: '#7c3aed', hoverBg: 'rgba(109,40,217,0.12)', dot: '#7c3aed' },
   { border: '#99f6e4', bg: 'rgba(13,148,136,0.07)', hoverBorder: '#0d9488', hoverBg: 'rgba(13,148,136,0.12)', dot: '#0d9488' },
@@ -39,15 +37,18 @@ const helpItems = [
   { text: 'Analyze your weak subjects and suggest resources.',darkColor: '#fbbf24', lightColor: '#d97706' },
 ];
 
+const INITIAL_MESSAGES = [
+  { id: 1, sender: 'ai', text: "Hello! I'm your UniSync AI Study Assistant. How can I help you today?" }
+];
+
 const ChatbotPage = () => {
   const [isDark, setIsDark] = useState(true);
-  const [messages, setMessages] = useState([
-    { id: 1, sender: 'ai', text: "Hello! I'm your UniSync AI Study Assistant. How can I help you today?" }
-  ]);
+  const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [replyIndex, setReplyIndex] = useState(0);
   const [hoveredQ, setHoveredQ] = useState(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -68,9 +69,14 @@ const ChatbotPage = () => {
     }, 1500);
   };
 
+  const handleClearChat = () => {
+    setMessages(INITIAL_MESSAGES);
+    setReplyIndex(0);
+    setShowClearConfirm(false);
+  };
+
   // ── Theme tokens ──────────────────────────────────────────
   const t = isDark ? {
-    // backgrounds
     pageBg:        'transparent',
     panelBg:       '#0d0d14',
     panelBorder:   '#1f1b33',
@@ -116,8 +122,15 @@ const ChatbotPage = () => {
     toggleBg:      '#1a0f2e',
     toggleBdr:     '#4c1d95',
     toggleClr:     '#c4b5fd',
+    clearBg:       'rgba(220,38,38,0.12)',
+    clearBdr:      'rgba(220,38,38,0.3)',
+    clearClr:      '#f87171',
+    clearHoverBg:  'rgba(220,38,38,0.22)',
+    confirmBg:     '#1a0a0a',
+    confirmBdr:    '#7f1d1d',
+    confirmTitleClr: '#fca5a5',
+    confirmBodyClr:  '#9ca3af',
   } : {
-    // backgrounds
     pageBg:        'transparent',
     panelBg:       '#ffffff',
     panelBorder:   '#e5e7eb',
@@ -163,7 +176,17 @@ const ChatbotPage = () => {
     toggleBg:      '#fef3c7',
     toggleBdr:     '#fbbf24',
     toggleClr:     '#d97706',
+    clearBg:       'rgba(220,38,38,0.07)',
+    clearBdr:      'rgba(220,38,38,0.2)',
+    clearClr:      '#dc2626',
+    clearHoverBg:  'rgba(220,38,38,0.13)',
+    confirmBg:     '#fff5f5',
+    confirmBdr:    '#fecaca',
+    confirmTitleClr: '#dc2626',
+    confirmBodyClr:  '#6b7280',
   };
+
+  const userMsgCount = messages.filter(m => m.sender === 'user').length;
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)] min-h-[600px] animate-fade-in pb-10">
@@ -191,14 +214,34 @@ const ChatbotPage = () => {
               Online
             </p>
           </div>
-          {/* Colour dots */}
-          <div className="ml-auto flex items-center gap-3">
-            <div className="flex gap-1.5">
+
+          <div className="ml-auto flex items-center gap-2">
+            <div className="flex gap-1.5 mr-1">
               {['#7c3aed', '#0d9488', '#db2777', '#d97706'].map(c => (
                 <div key={c} className="w-2 h-2 rounded-full" style={{ background: c, opacity: isDark ? 0.8 : 0.6 }} />
               ))}
             </div>
-            {/* Toggle button */}
+
+            {/* Clear Chat button — only show when there are user messages */}
+            {userMsgCount > 0 && (
+              <button
+                onClick={() => setShowClearConfirm(true)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none"
+                style={{
+                  background: t.clearBg,
+                  border: `1px solid ${t.clearBdr}`,
+                  color: t.clearClr,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = t.clearHoverBg}
+                onMouseLeave={e => e.currentTarget.style.background = t.clearBg}
+                title="Clear chat"
+              >
+                <FiTrash2 size={12} />
+                Clear
+              </button>
+            )}
+
+            {/* Dark/Light toggle */}
             <button
               onClick={() => setIsDark(d => !d)}
               className="w-8 h-8 rounded-full flex items-center justify-center transition-all focus:outline-none"
@@ -209,6 +252,51 @@ const ChatbotPage = () => {
             </button>
           </div>
         </div>
+
+        {/* Clear Confirm Banner */}
+        <AnimatePresence>
+          {showClearConfirm && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                background: t.confirmBg,
+                borderBottom: `1px solid ${t.confirmBdr}`,
+                overflow: 'hidden',
+              }}
+            >
+              <div className="px-4 py-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <FiTrash2 size={14} style={{ color: t.confirmTitleClr, flexShrink: 0 }} />
+                  <p className="text-xs font-semibold" style={{ color: t.confirmTitleClr }}>
+                    Clear all messages?
+                  </p>
+                  <p className="text-xs hidden sm:block" style={{ color: t.confirmBodyClr }}>
+                    This cannot be undone.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => setShowClearConfirm(false)}
+                    className="px-3 py-1 rounded-lg text-xs font-medium focus:outline-none"
+                    style={{ background: 'transparent', border: `1px solid ${t.confirmBdr}`, color: t.confirmBodyClr }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleClearChat}
+                    className="px-3 py-1 rounded-lg text-xs font-semibold focus:outline-none"
+                    style={{ background: t.confirmTitleClr, color: '#fff', border: 'none' }}
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Messages */}
         <div
@@ -225,7 +313,6 @@ const ChatbotPage = () => {
                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div className={`flex max-w-[80%] items-end gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                  {/* Avatar */}
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mb-0.5"
                     style={msg.sender === 'user'
@@ -235,7 +322,6 @@ const ChatbotPage = () => {
                   >
                     {msg.sender === 'user' ? <FiUser size={13} /> : <FiCpu size={13} />}
                   </div>
-                  {/* Bubble */}
                   <div
                     className="p-3.5 rounded-2xl text-sm leading-relaxed"
                     style={msg.sender === 'user'
@@ -350,7 +436,7 @@ const ChatbotPage = () => {
           <p className="text-xs font-semibold mb-3" style={{ color: t.statsLabelClr }}>Session Stats</p>
           <div className="flex justify-between text-center">
             {[
-              { label: 'Questions', val: messages.filter(m => m.sender === 'user').length },
+              { label: 'Questions', val: userMsgCount },
               { label: 'Answers',   val: Math.max(0, messages.filter(m => m.sender === 'ai').length - 1) },
               { label: 'Topics',    val: Math.max(1, Math.floor(messages.length / 2)) },
             ].map((s, i) => (
@@ -368,3 +454,4 @@ const ChatbotPage = () => {
 };
 
 export default ChatbotPage;
+
