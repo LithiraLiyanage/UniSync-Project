@@ -47,7 +47,7 @@ const modules = [
 
 const statDefs = [
   {
-    label: 'Active Users', value: '2,845', icon: FiUsers,
+    label: 'Active Users', value: '2,845', icon: FiUsers, trend: '↑ 12%', trendUp: true,
     color: '#7c3aed',
     darkIconBg: 'rgba(124,58,237,0.12)', lightIconBg: '#f5f3ff',
     darkBg: 'rgba(124,58,237,0.07)', lightBg: '#faf5ff',
@@ -55,7 +55,7 @@ const statDefs = [
     darkShadow: 'rgba(124,58,237,0.2)', lightShadow: 'rgba(124,58,237,0.1)',
   },
   {
-    label: 'Pending Listings', value: '12', icon: FiDollarSign,
+    label: 'Pending Listings', value: '12', icon: FiDollarSign, trend: '↓ 3%', trendUp: false,
     color: '#0d9488',
     darkIconBg: 'rgba(13,148,136,0.12)', lightIconBg: '#f0fdfa',
     darkBg: 'rgba(13,148,136,0.07)', lightBg: '#f0fdf9',
@@ -63,7 +63,7 @@ const statDefs = [
     darkShadow: 'rgba(13,148,136,0.2)', lightShadow: 'rgba(13,148,136,0.1)',
   },
   {
-    label: 'Pending Events', value: '8', icon: FiCalendar,
+    label: 'Pending Events', value: '8', icon: FiCalendar, trend: '↑ 5%', trendUp: true,
     color: '#d97706',
     darkIconBg: 'rgba(217,119,6,0.12)', lightIconBg: '#fffbeb',
     darkBg: 'rgba(217,119,6,0.07)', lightBg: '#fefce8',
@@ -71,7 +71,7 @@ const statDefs = [
     darkShadow: 'rgba(217,119,6,0.2)', lightShadow: 'rgba(217,119,6,0.1)',
   },
   {
-    label: 'Active Alerts', value: '2', icon: FiAlertCircle,
+    label: 'Active Alerts', value: '2', icon: FiAlertCircle, trend: '↑ 1', trendUp: false,
     color: '#e11d48',
     darkIconBg: 'rgba(225,29,72,0.12)', lightIconBg: '#fff1f2',
     darkBg: 'rgba(225,29,72,0.07)', lightBg: '#fff5f6',
@@ -98,41 +98,41 @@ const AdminDashboard = () => {
   }, []);
 
   const t = isDark ? {
-    pageBg:          '#08080f',
-    cardBg:          '#0d0d14',
-    cardBorder:      '#1f1b33',
-    cardShadow:      '0 4px 24px rgba(0,0,0,0.4)',
-    titleClr:        '#f3f4f6',
-    subtitleClr:     '#6b7280',
-    sectionTitleClr: '#e9d5ff',
-    cardTitleClr:    '#f3f4f6',
-    cardDescClr:     '#9ca3af',
-    activityTitle:   '#e5e7eb',
-    activityTime:    '#6b7280',
-    chartGrid:       'rgba(255,255,255,0.05)',
-    chartTick:       '#6b7280',
-    toggleBg:        '#1a0f2e',
-    toggleBorder:    '#4c1d95',
-    toggleColor:     '#c4b5fd',
-    nameGradient:    'linear-gradient(90deg,#a78bfa,#f472b6)',
+    pageBg:          'var(--bg)',
+    cardBg:          'rgba(26, 26, 26, 0.65)',
+    cardBorder:      'rgba(255, 255, 255, 0.08)',
+    cardShadow:      '0 8px 32px rgba(0, 0, 0, 0.25)',
+    titleClr:        'var(--text)',
+    subtitleClr:     'var(--muted)',
+    sectionTitleClr: 'var(--text)',
+    cardTitleClr:    'var(--text)',
+    cardDescClr:     'var(--muted)',
+    activityTitle:   'var(--text)',
+    activityTime:    'var(--muted)',
+    chartGrid:       'rgba(255, 255, 255, 0.05)',
+    chartTick:       'var(--muted)',
+    toggleBg:        'rgba(255, 255, 255, 0.05)',
+    toggleBorder:    'rgba(255, 255, 255, 0.1)',
+    toggleColor:     'var(--text)',
+    nameGradient:    'linear-gradient(90deg, #8b5cf6, #f472b6)',
   } : {
-    pageBg:          '#f1f5f9',
-    cardBg:          '#ffffff',
-    cardBorder:      '#e2e8f0',
-    cardShadow:      '0 2px 16px rgba(15,23,42,0.07)',
-    titleClr:        '#0f172a',
-    subtitleClr:     '#64748b',
-    sectionTitleClr: '#1e293b',
-    cardTitleClr:    '#1e293b',
-    cardDescClr:     '#64748b',
-    activityTitle:   '#1e293b',
-    activityTime:    '#94a3b8',
-    chartGrid:       'rgba(15,23,42,0.06)',
-    chartTick:       '#94a3b8',
-    toggleBg:        '#1e293b',
-    toggleBorder:    '#334155',
-    toggleColor:     '#94a3b8',
-    nameGradient:    'linear-gradient(90deg,#7c3aed,#db2777)',
+    pageBg:          'var(--bg)',
+    cardBg:          'rgba(255, 255, 255, 0.8)',
+    cardBorder:      'rgba(0, 0, 0, 0.05)',
+    cardShadow:      '0 8px 32px rgba(0, 0, 0, 0.06)',
+    titleClr:        'var(--text)',
+    subtitleClr:     'var(--muted)',
+    sectionTitleClr: 'var(--text)',
+    cardTitleClr:    'var(--text)',
+    cardDescClr:     'var(--muted)',
+    activityTitle:   'var(--text)',
+    activityTime:    'var(--muted)',
+    chartGrid:       'rgba(0, 0, 0, 0.04)',
+    chartTick:       'var(--muted)',
+    toggleBg:        'rgba(0, 0, 0, 0.03)',
+    toggleBorder:    'rgba(0, 0, 0, 0.08)',
+    toggleColor:     'var(--text)',
+    nameGradient:    'linear-gradient(90deg, #6d28d9, #db2777)',
   };
 
   const barData = {
@@ -164,7 +164,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex-1 p-6 md:p-8 overflow-y-auto w-full transition-colors duration-300"
+    <div className="flex-1 pt-28 pb-12 px-6 md:px-8 overflow-y-auto w-full transition-colors duration-300 relative"
       style={{ background: t.pageBg }}>
       <div className="max-w-7xl mx-auto space-y-8">
 
@@ -173,13 +173,13 @@ const AdminDashboard = () => {
           className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight" style={{ color: t.titleClr }}>
-              Admin Overview,{' '}
+              Welcome back,{' '}
               <span style={{ background: t.nameGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 {user?.name?.split(' ')[0] || 'Admin'}
-              </span>{' '}👑
+              </span>{' '}👋
             </h1>
             <p className="mt-1 text-sm" style={{ color: t.subtitleClr }}>
-              System analytics and pending actions · {dateStr}
+              System analytics and pending actions
             </p>
           </div>
 
@@ -207,22 +207,27 @@ const AdminDashboard = () => {
                 key={s.label}
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07 }}
-                className="p-5 rounded-2xl flex items-center justify-between transition-colors duration-300"
+                className="p-6 rounded-2xl flex items-center justify-between transition-all duration-300 backdrop-blur-xl hover:-translate-y-1 hover:shadow-2xl"
                 style={{
-                  background: isDark ? s.darkBg : s.lightBg,
+                  background: isDark ? `color-mix(in srgb, ${s.darkBg} 40%, transparent)` : `color-mix(in srgb, ${s.lightBg} 60%, transparent)`,
                   border: `1px solid ${isDark ? s.darkBorder : s.lightBorder}`,
-                  boxShadow: `0 4px 20px ${isDark ? s.darkShadow : s.lightShadow}`,
+                  boxShadow: `0 8px 32px ${isDark ? s.darkShadow : s.lightShadow}`,
                 }}
               >
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: s.color }}>
                     {s.label}
                   </div>
-                  <div className="text-3xl font-bold" style={{ color: s.color }}>{s.value}</div>
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-3xl font-bold" style={{ color: s.color }}>{s.value}</div>
+                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${s.trendUp ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+                      {s.trend}
+                    </span>
+                  </div>
                 </div>
-                <div className="p-3 rounded-xl shrink-0"
+                <div className="p-3 rounded-xl shrink-0 transition-colors duration-300"
                   style={{ background: isDark ? s.darkIconBg : s.lightIconBg }}>
-                  <Icon size={22} color={s.color} />
+                  <Icon size={24} color={s.color} />
                 </div>
               </motion.div>
             );
@@ -233,7 +238,7 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* Bar Chart */}
-          <div className="lg:col-span-2 p-6 rounded-2xl h-80 flex flex-col transition-colors duration-300"
+          <div className="lg:col-span-2 p-6 rounded-2xl h-80 flex flex-col transition-all duration-300 backdrop-blur-xl hover:shadow-2xl hover:-translate-y-1"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, boxShadow: t.cardShadow }}>
             <h3 className="text-base font-bold mb-4" style={{ color: t.sectionTitleClr }}>
               Module Engagement (Today)
@@ -244,7 +249,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Recent Activity */}
-          <div className="p-6 rounded-2xl h-80 flex flex-col transition-colors duration-300"
+          <div className="p-6 rounded-2xl h-80 flex flex-col transition-all duration-300 backdrop-blur-xl hover:shadow-2xl hover:-translate-y-1"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, boxShadow: t.cardShadow }}>
             <h3 className="text-base font-bold mb-4" style={{ color: t.sectionTitleClr }}>Recent Activity</h3>
             <div className="flex-1 overflow-y-auto space-y-4 pr-1">
@@ -276,17 +281,16 @@ const AdminDashboard = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.07 }}
-                  whileHover={{ y: -4, boxShadow: `0 12px 28px ${isDark ? mod.darkGlow : mod.lightGlow}` }}
-                  className="p-5 rounded-2xl transition-all duration-300 cursor-pointer"
+                  className="p-6 rounded-2xl transition-all duration-300 cursor-pointer backdrop-blur-xl hover:-translate-y-1.5 hover:shadow-2xl group"
                   style={{
-                    background: isDark ? mod.darkBg : mod.lightBg,
+                    background: isDark ? `color-mix(in srgb, ${mod.darkBg} 40%, transparent)` : `color-mix(in srgb, ${mod.lightBg} 60%, transparent)`,
                     border: `1px solid ${isDark ? mod.darkBorder : mod.lightBorder}`,
                     boxShadow: t.cardShadow,
                   }}
                 >
-                  <h3 className="text-base font-bold mb-1" style={{ color: mod.color }}>{mod.title}</h3>
-                  <p className="text-sm mb-3" style={{ color: t.cardDescClr }}>{mod.desc}</p>
-                  <div className="flex items-center text-sm font-bold gap-1" style={{ color: mod.color }}>
+                  <h3 className="text-base font-bold mb-1 group-hover:opacity-80 transition-opacity" style={{ color: mod.color }}>{mod.title}</h3>
+                  <p className="text-sm mb-4" style={{ color: t.cardDescClr }}>{mod.desc}</p>
+                  <div className="flex items-center text-sm font-bold gap-1 group-hover:translate-x-1 transition-transform" style={{ color: mod.color }}>
                     Manage <FiArrowRight size={14} />
                   </div>
                 </motion.div>
