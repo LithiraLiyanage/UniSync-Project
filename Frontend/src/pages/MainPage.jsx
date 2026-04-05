@@ -50,7 +50,7 @@ const MainPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="hero-gradient pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex-grow flex items-center relative overflow-hidden">
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex-grow flex items-center relative overflow-hidden bg-[var(--bg)] transition-colors duration-300">
         
         {/* Animated Background Elements */}
         <motion.div 
@@ -69,7 +69,7 @@ const MainPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-5xl md:text-6xl font-extrabold text-black-700 tracking-tight mb-6"
+            className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-[var(--text)] transition-colors duration-300"
           >
             Your Smart Campus <span className="text-dark-blue">Assistant</span>
           </motion.h1>
@@ -78,7 +78,7 @@ const MainPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto mb-10"
+            className="mt-4 text-xl max-w-2xl mx-auto mb-10 text-[var(--muted)] transition-colors duration-300"
           >
             Manage studies, find gigs, travel smart & connect with peers. One platform to power your entire university experience.
           </motion.p>
@@ -94,10 +94,10 @@ const MainPage = () => {
                 <Link to="/register" className="w-full sm:w-auto px-8 py-3 bg-dark-blue text-white rounded-lg hover:bg-black font-semibold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
                   Get Started
                 </Link>
-                <Link to="/admin/login" className="w-full sm:w-auto px-8 py-3 bg-white text-dark-blue border border-blue-200 rounded-lg hover:bg-blue-50 font-semibold shadow-sm transition-all">
+                <Link to="/admin/login" className="w-full sm:w-auto px-8 py-3 bg-[var(--card)] text-[var(--text)] border border-[var(--border)] rounded-lg font-semibold shadow-sm transition-all hover:opacity-80">
                   Admin Portal
                 </Link>
-                <button onClick={handleLearnMore} className="w-full sm:w-auto px-8 py-3 text-gray-600 hover:text-dark-blue font-medium transition-colors">
+                <button onClick={handleLearnMore} className="w-full sm:w-auto px-8 py-3 text-[var(--text)] font-medium transition-colors hover:opacity-80">
                   Learn More ↓
                 </button>
               </>
@@ -115,11 +115,11 @@ const MainPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-[var(--bg)] transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">Everything you need in one place</h2>
-            <p className="mt-4 text-lg text-gray-600">Explore the core features of UniSync</p>
+            <h2 className="text-3xl font-bold text-[var(--text)] transition-colors duration-300">Everything you need in one place</h2>
+            <p className="mt-4 text-lg text-[var(--muted)] transition-colors duration-300">Explore the core features of UniSync</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -135,13 +135,13 @@ const MainPage = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:border-blue-200 transition-colors group cursor-pointer"
+                  className="rounded-2xl p-6 shadow-lg border bg-[var(--card)] border-[var(--border)] transition-colors duration-300 group cursor-pointer"
                 >
                   <div className={`w-14 h-14 rounded-xl mb-6 flex items-center justify-center bg-gradient-to-br ${feature.color} shadow-inner`}>
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                  <p className="text-gray-600 mb-6 flex-grow">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-[var(--text)] mb-3 transition-colors duration-300">{feature.title}</h3>
+                  <p className="text-[var(--muted)] mb-6 flex-grow transition-colors duration-300">{feature.description}</p>
                   <div className="flex items-center text-blue-600 font-medium group-hover:text-dark-blue transition-colors">
                     Explore <FiArrowRight className="ml-2 transform group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -153,11 +153,11 @@ const MainPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-12 text-center">
+      <footer className="border-t py-12 text-center bg-[var(--bg)] border-[var(--border)] transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
           <div className="text-2xl font-bold text-dark-blue mb-4">UniSync</div>
-          <p className="text-gray-500 mb-6">© 2026 Built for Students</p>
-          <div className="flex space-x-6 text-sm font-medium text-gray-600">
+          <p className="text-[var(--muted)] mb-6 transition-colors duration-300">© 2026 Built for Students</p>
+          <div className="flex space-x-6 text-sm font-medium text-[var(--muted)] transition-colors duration-300">
             <Link to="/" className="hover:text-dark-blue transition-colors">Home</Link>
             <Link to="/login" className="hover:text-dark-blue transition-colors">Login</Link>
             <Link to="/admin/login" className="hover:text-dark-blue transition-colors">Admin Login</Link>

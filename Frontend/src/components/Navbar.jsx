@@ -28,13 +28,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed w-full z-50 top-0 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <nav className="fixed w-full z-50 top-0 transition-colors duration-300 bg-[var(--card)]/80 backdrop-blur-md border-b border-[var(--border)] shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="text-2xl font-bold text-dark-blue tracking-tight hover:opacity-90 transition-opacity">
+            <Link to="/" className="text-2xl font-bold text-dark-blue tracking-tight hover:opacity-90 transition-opacity dark:text-[var(--primary-light)]">
               UniSync
             </Link>
           </div>
@@ -44,14 +44,14 @@ const Navbar = () => {
             <div className="flex space-x-6">
               <NavLink 
                 to="/" 
-                className={({ isActive }) => `text-base font-medium transition-colors hover:text-dark-blue ${isActive ? 'text-dark-blue font-semibold' : 'text-gray-600'}`}
+                className={({ isActive }) => `text-base font-medium transition-colors hover:text-dark-blue ${isActive ? 'text-[var(--text)] font-semibold' : 'text-[var(--muted)]'}`}
               >
                 Home
               </NavLink>
               <a 
                 href="/#features"
                 onClick={scrollToFeatures}
-                className="text-base font-medium text-gray-600 hover:text-dark-blue transition-colors"
+                className="text-base font-medium text-[var(--muted)] hover:text-dark-blue transition-colors"
               >
                 Features
               </a>
@@ -86,7 +86,7 @@ const Navbar = () => {
                     <div className="h-8 w-8 rounded-full bg-blue-100 text-dark-blue flex items-center justify-center font-bold text-sm">
                       {user.name ? user.name.charAt(0).toUpperCase() : 'S'}
                     </div>
-                    <span className="text-gray-700 font-medium">Hi, {user.name?.split(' ')[0]} 👋</span>
+                    <span className="text-[var(--text)] font-medium">Hi, {user.name?.split(' ')[0]} 👋</span>
                   </div>
                   <button 
                     onClick={handleLogout}
@@ -129,29 +129,28 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
+        <div className="md:hidden bg-[var(--card)] border-t border-[var(--border)] shadow-lg absolute w-full transition-colors duration-300">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <NavLink
               to="/"
               onClick={() => setIsOpen(false)}
-              className={({ isActive }) => `block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'bg-blue-50 text-dark-blue' : 'text-gray-700 hover:bg-gray-50 hover:text-dark-blue'}`}
+              className={({ isActive }) => `block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'bg-blue-50 text-[var(--text)]' : 'text-[var(--muted)] hover:bg-gray-50 hover:text-dark-blue'}`}
             >
               Home
             </NavLink>
             <a
               href="/#features"
               onClick={scrollToFeatures}
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-dark-blue"
+              className="block px-3 py-2 rounded-md text-base font-medium text-[var(--muted)] hover:bg-gray-50 hover:text-dark-blue"
             >
               Features
             </a>
             
-            {/* Mobile Auth Options */}
-            <div className="pt-4 pb-2 border-t border-gray-200">
+            <div className="pt-4 pb-2 border-t border-[var(--border)]">
               <div className="px-3 mb-4 flex justify-end">
                 <button 
                   onClick={toggleTheme} 
-                  className="p-2 flex items-center gap-2 text-gray-600 bg-gray-50 rounded-lg w-full justify-center border border-gray-200"
+                  className="p-2 flex items-center gap-2 text-[var(--text)] bg-[var(--bg)] rounded-lg w-full justify-center border border-[var(--border)] hover:opacity-80"
                 >
                   {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
                   <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>

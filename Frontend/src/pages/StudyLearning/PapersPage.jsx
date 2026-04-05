@@ -253,13 +253,6 @@ const PapersPage = ({ isDark = false }) => {
             onBlur={e => e.target.style.borderColor = t.searchBorder}
           />
         </div>
-        <button
-          onClick={() => setShowUploadModal(true)}
-          className="w-full sm:w-auto flex justify-center items-center px-5 py-2.5 rounded-lg font-bold transition-all text-white shadow-sm gap-2 text-sm"
-          style={{ background: t.uploadBtn, boxShadow: '0 4px 14px rgba(109,40,217,0.35)' }}
-        >
-          <FiPlus size={16} /> Upload Paper
-        </button>
       </div>
 
       {/* ── Papers Grid ── */}

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-dark-blue: #00008b;
@@ -31,7 +32,6 @@
     --radius: 14px;
     --radius-sm: 8px;
   }
-
   body.dark {
     --bg: #0F0F0F;
     --card: #1A1A1A;

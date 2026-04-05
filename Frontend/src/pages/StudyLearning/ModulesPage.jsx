@@ -223,47 +223,6 @@ const ModulesPage = () => {
             className="pl-10 pr-4 py-2 border border-border rounded-lg w-full focus:outline-none focus:border-primary bg-card text-text"
           />
         </div>
-
-        {/* ── Add Module Button — light style ── */}
-        <button
-          onClick={() => setShowAddModal(true)}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '9px 18px',
-            background: '#ffffff',
-            border: '1.5px solid #e5e7eb',
-            borderRadius: '10px',
-            color: '#3730a3',
-            fontWeight: '600',
-            fontSize: '14px',
-            cursor: 'pointer',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.07)',
-            transition: 'background 0.15s, border-color 0.15s',
-            whiteSpace: 'nowrap',
-            flexShrink: 0,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#eef2ff';
-            e.currentTarget.style.borderColor = '#a5b4fc';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#ffffff';
-            e.currentTarget.style.borderColor = '#e5e7eb';
-          }}
-        >
-          {/* small indigo icon box */}
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: '22px', height: '22px', borderRadius: '6px',
-            background: 'linear-gradient(135deg, #3730a3, #4f46e5)',
-            color: '#fff', flexShrink: 0,
-          }}>
-            <FiPlus size={13} strokeWidth={2.8} />
-          </span>
-          Add Module
-        </button>
       </div>
 
       {/* ── Modules Grid ── */}

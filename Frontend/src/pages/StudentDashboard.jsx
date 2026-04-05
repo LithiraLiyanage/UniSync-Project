@@ -90,46 +90,45 @@ const StudentDashboard = () => {
   }, []);
 
   const t = isDark ? {
-    pageBg:         '#08080f',
-    cardBg:         '#0d0d14',
-    cardBorder:     '#1f1b33',
-    cardShadow:     '0 4px 24px rgba(0,0,0,0.4)',
-    titleClr:       '#f3f4f6',
-    subtitleClr:    '#6b7280',
-    sectionTitleClr:'#e9d5ff',
-    cardTitleClr:   '#f3f4f6',
-    cardDescClr:    '#6b7280',
-    annTextClr:     '#9ca3af',
-    chartGrid:      'rgba(255,255,255,0.05)',
-    chartTick:      '#6b7280',
-    chartLegend:    '#9ca3af',
-    toggleBg:       '#1a0f2e',
-    toggleBorder:   '#4c1d95',
-    toggleColor:    '#c4b5fd',
-    quickCardBg:    '#0d0d14',
-    quickCardBorder:'#1f1b33',
-    nameGradient:   'linear-gradient(90deg,#a78bfa,#2dd4bf)',
+    pageBg:         'var(--bg)',
+    cardBg:         'rgba(26, 26, 26, 0.65)',
+    cardBorder:     'rgba(255, 255, 255, 0.08)',
+    cardShadow:     '0 8px 32px rgba(0, 0, 0, 0.25)',
+    titleClr:       'var(--text)',
+    subtitleClr:    'var(--muted)',
+    sectionTitleClr:'var(--text)',
+    cardTitleClr:   'var(--text)',
+    cardDescClr:    'var(--muted)',
+    annTextClr:     'var(--muted)',
+    chartGrid:      'rgba(255, 255, 255, 0.05)',
+    chartTick:      'var(--muted)',
+    chartLegend:    'var(--muted)',
+    toggleBg:       'rgba(255,255,255,0.05)',
+    toggleBorder:   'rgba(255,255,255,0.1)',
+    toggleColor:    'var(--text)',
+    quickCardBg:    'rgba(26, 26, 26, 0.65)',
+    quickCardBorder:'rgba(255, 255, 255, 0.08)',
+    nameGradient:   'linear-gradient(90deg, #8b5cf6, #3b82f6)',
   } : {
-    // ✅ Refined light mode tokens
-    pageBg:         '#f1f5f9',
-    cardBg:         '#ffffff',
-    cardBorder:     '#e2e8f0',
-    cardShadow:     '0 2px 16px rgba(15,23,42,0.07)',
-    titleClr:       '#0f172a',
-    subtitleClr:    '#64748b',
-    sectionTitleClr:'#1e293b',
-    cardTitleClr:   '#1e293b',
-    cardDescClr:    '#64748b',
-    annTextClr:     '#475569',
-    chartGrid:      'rgba(15,23,42,0.06)',
-    chartTick:      '#94a3b8',
-    chartLegend:    '#64748b',
-    toggleBg:       '#1e293b',
-    toggleBorder:   '#334155',
-    toggleColor:    '#94a3b8',
-    quickCardBg:    '#ffffff',
-    quickCardBorder:'#e2e8f0',
-    nameGradient:   'linear-gradient(90deg,#6d28d9,#0d9488)',
+    pageBg:         'var(--bg)',
+    cardBg:         'rgba(255, 255, 255, 0.8)',
+    cardBorder:     'rgba(0, 0, 0, 0.05)',
+    cardShadow:     '0 8px 32px rgba(0, 0, 0, 0.06)',
+    titleClr:       'var(--text)',
+    subtitleClr:    'var(--muted)',
+    sectionTitleClr:'var(--text)',
+    cardTitleClr:   'var(--text)',
+    cardDescClr:    'var(--muted)',
+    annTextClr:     'var(--muted)',
+    chartGrid:      'rgba(0, 0, 0, 0.04)',
+    chartTick:      'var(--muted)',
+    chartLegend:    'var(--muted)',
+    toggleBg:       'rgba(0,0,0,0.03)',
+    toggleBorder:   'rgba(0,0,0,0.08)',
+    toggleColor:    'var(--text)',
+    quickCardBg:    'rgba(255, 255, 255, 0.8)',
+    quickCardBorder:'rgba(0, 0, 0, 0.05)',
+    nameGradient:   'linear-gradient(90deg, #6d28d9, #2563eb)',
   };
 
   const chartData = {
@@ -168,7 +167,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="flex-1 p-6 md:p-8 overflow-y-auto w-full transition-colors duration-300"
+    <div className="flex-1 pt-28 pb-12 px-6 md:px-8 overflow-y-auto w-full transition-colors duration-300 relative"
       style={{ background: t.pageBg }}>
       <div className="max-w-7xl mx-auto space-y-8">
 
@@ -210,11 +209,11 @@ const StudentDashboard = () => {
               key={s.label}
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07 }}
-              className="p-5 rounded-2xl relative overflow-hidden transition-colors duration-300"
+              className="p-6 rounded-2xl relative overflow-hidden transition-all duration-300 backdrop-blur-xl hover:-translate-y-1"
               style={{
-                background: isDark ? s.darkBg : s.lightBg,
+                background: isDark ? `color-mix(in srgb, ${s.darkBg} 40%, transparent)` : `color-mix(in srgb, ${s.lightBg} 60%, transparent)`,
                 border: `1px solid ${isDark ? s.darkBorder : s.lightBorder}`,
-                boxShadow: `0 4px 20px ${isDark ? s.darkShadow : s.lightShadow}`,
+                boxShadow: `0 8px 32px ${isDark ? s.darkShadow : s.lightShadow}`,
               }}
             >
               <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full opacity-20 pointer-events-none"
@@ -229,7 +228,7 @@ const StudentDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* Chart */}
-          <div className="lg:col-span-2 p-6 rounded-2xl h-80 transition-colors duration-300"
+          <div className="lg:col-span-2 p-6 rounded-2xl h-80 transition-all duration-300 backdrop-blur-xl hover:shadow-2xl"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, boxShadow: t.cardShadow }}>
             <h3 className="text-base font-bold mb-4 flex items-center gap-2" style={{ color: t.sectionTitleClr }}>
               <FiTrendingUp style={{ color: '#7c3aed' }} /> Performance Overview
@@ -240,7 +239,7 @@ const StudentDashboard = () => {
           </div>
 
           {/* Announcements */}
-          <div className="p-6 rounded-2xl h-80 flex flex-col transition-colors duration-300"
+          <div className="p-6 rounded-2xl h-80 flex flex-col transition-all duration-300 backdrop-blur-xl hover:shadow-2xl"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, boxShadow: t.cardShadow }}>
             <h3 className="text-base font-bold mb-4 flex items-center gap-2" style={{ color: t.sectionTitleClr }}>
               <FiBell style={{ color: '#db2777' }} /> Announcements
@@ -273,8 +272,7 @@ const StudentDashboard = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.08 }}
-                    whileHover={{ y: -5, boxShadow: `0 12px 32px ${glow}` }}
-                    className="relative overflow-hidden p-6 rounded-2xl flex flex-col cursor-pointer h-full transition-colors duration-300"
+                    className="relative overflow-hidden p-6 rounded-2xl flex flex-col cursor-pointer h-full transition-all duration-300 backdrop-blur-xl hover:-translate-y-1.5 hover:shadow-2xl group"
                     style={{ background: t.quickCardBg, border: `1px solid ${t.quickCardBorder}`, boxShadow: t.cardShadow }}
                   >
                     {/* Blob */}
