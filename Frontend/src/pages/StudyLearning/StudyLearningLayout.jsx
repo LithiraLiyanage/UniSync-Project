@@ -89,7 +89,16 @@ const StudyLearningLayout = () => {
 
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
               <h1 className="text-3xl font-bold flex items-center text-text tracking-tight">
-                <FiBookOpen className="mr-3 text-primary hidden md:block" /> Study & Learning
+                <div className="hidden md:flex items-center justify-center p-3 mr-4 rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 shadow-md border border-blue-100/50 dark:border-blue-800/30">
+                  <svg width="0" height="0" className="absolute">
+                    <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop stopColor="#3B82F6" offset="0%" />
+                      <stop stopColor="#8B5CF6" offset="100%" />
+                    </linearGradient>
+                  </svg>
+                  <FiBookOpen size={28} style={{ stroke: "url(#icon-gradient)" }} className="drop-shadow-sm" />
+                </div>
+                Study & Learning
               </h1>
               <p className="mt-2 text-muted max-w-2xl text-[15px]">Manage your modules, past papers, resources, and progress.</p>
             </motion.div>

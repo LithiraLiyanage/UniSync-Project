@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   FiUsers, FiDollarSign, FiCalendar, FiAlertCircle,
   FiArrowRight, FiCheckCircle, FiClock, FiXCircle,
-  FiSun, FiMoon
+  FiSun, FiMoon, FiBookOpen, FiTrendingUp, FiMapPin
 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
@@ -20,28 +20,44 @@ const modules = [
     color: '#6d28d9',
     darkBg: 'rgba(109,40,217,0.1)', lightBg: '#f5f3ff',
     darkBorder: 'rgba(109,40,217,0.25)', lightBorder: '#ddd6fe',
-    darkGlow: 'rgba(109,40,217,0.25)', lightGlow: 'rgba(109,40,217,0.12)',
+    icon: FiBookOpen,
+    lightGrad: 'bg-gradient-to-br from-blue-100 to-purple-100',
+    darkGrad: 'bg-gradient-to-br from-blue-900/40 to-purple-900/40',
+    iconColorLight: 'text-blue-600',
+    iconColorDark: 'text-purple-400',
   },
   {
     id: 2, title: 'Earn & Skills', desc: 'Moderate marketplace', link: '/admin/earn',
     color: '#0d9488',
     darkBg: 'rgba(13,148,136,0.1)', lightBg: '#f0fdfa',
     darkBorder: 'rgba(13,148,136,0.25)', lightBorder: '#99f6e4',
-    darkGlow: 'rgba(13,148,136,0.25)', lightGlow: 'rgba(13,148,136,0.12)',
+    icon: FiTrendingUp,
+    lightGrad: 'bg-gradient-to-br from-green-100 to-emerald-100',
+    darkGrad: 'bg-gradient-to-br from-green-900/40 to-emerald-900/40',
+    iconColorLight: 'text-emerald-600',
+    iconColorDark: 'text-emerald-400',
   },
   {
     id: 3, title: 'Travel Smart', desc: 'Send alerts & track shuttles', link: '/admin/travel',
     color: '#d97706',
     darkBg: 'rgba(217,119,6,0.1)', lightBg: '#fffbeb',
     darkBorder: 'rgba(217,119,6,0.25)', lightBorder: '#fde68a',
-    darkGlow: 'rgba(217,119,6,0.25)', lightGlow: 'rgba(217,119,6,0.12)',
+    icon: FiMapPin,
+    lightGrad: 'bg-gradient-to-br from-cyan-100 to-sky-100',
+    darkGrad: 'bg-gradient-to-br from-cyan-900/40 to-sky-900/40',
+    iconColorLight: 'text-sky-600',
+    iconColorDark: 'text-cyan-400',
   },
   {
     id: 4, title: 'Social & Events', desc: 'Approve student events', link: '/admin/events',
     color: '#db2777',
     darkBg: 'rgba(219,39,119,0.1)', lightBg: '#fdf2f8',
     darkBorder: 'rgba(219,39,119,0.25)', lightBorder: '#fbcfe8',
-    darkGlow: 'rgba(219,39,119,0.25)', lightGlow: 'rgba(219,39,119,0.12)',
+    icon: FiUsers,
+    lightGrad: 'bg-gradient-to-br from-pink-100 to-orange-100',
+    darkGrad: 'bg-gradient-to-br from-pink-900/40 to-orange-900/40',
+    iconColorLight: 'text-pink-600',
+    iconColorDark: 'text-orange-400',
   },
 ];
 
@@ -276,26 +292,33 @@ const AdminDashboard = () => {
         <div>
           <h3 className="text-lg font-bold mb-4" style={{ color: t.sectionTitleClr }}>Department Management</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {modules.map((mod, i) => (
+            {modules.map((mod, i) => {
+              const Icon = mod.icon;
+              return (
               <Link to={mod.link} key={mod.id}>
                 <motion.div
                   initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.07 }}
-                  className="p-6 rounded-2xl transition-all duration-300 cursor-pointer backdrop-blur-xl hover:-translate-y-1.5 hover:shadow-2xl group"
+                  className="p-6 rounded-2xl transition-all duration-300 cursor-pointer backdrop-blur-xl hover:-translate-y-1.5 hover:shadow-2xl hover:scale-105 group h-full flex items-start gap-4"
                   style={{
                     background: isDark ? `color-mix(in srgb, ${mod.darkBg} 40%, transparent)` : `color-mix(in srgb, ${mod.lightBg} 60%, transparent)`,
                     border: `1px solid ${isDark ? mod.darkBorder : mod.lightBorder}`,
                     boxShadow: t.cardShadow,
                   }}
                 >
-                  <h3 className="text-base font-bold mb-1 group-hover:opacity-80 transition-opacity" style={{ color: mod.color }}>{mod.title}</h3>
-                  <p className="text-sm mb-4" style={{ color: t.cardDescClr }}>{mod.desc}</p>
-                  <div className="flex items-center text-sm font-bold gap-1 group-hover:translate-x-1 transition-transform" style={{ color: mod.color }}>
-                    Manage <FiArrowRight size={14} />
+                  <div className={`p-3 rounded-2xl shadow-md shrink-0 flex items-center justify-center transition-colors duration-300 ${isDark ? mod.darkGrad : mod.lightGrad} ${isDark ? mod.iconColorDark : mod.iconColorLight}`}>
+                    <Icon size={24} className="drop-shadow-sm" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold mb-1 group-hover:opacity-80 transition-opacity" style={{ color: mod.color }}>{mod.title}</h3>
+                    <p className="text-sm mb-4" style={{ color: t.cardDescClr }}>{mod.desc}</p>
+                    <div className="flex items-center text-sm font-bold gap-1 group-hover:translate-x-1 transition-transform" style={{ color: mod.color }}>
+                      Manage <FiArrowRight size={14} />
+                    </div>
                   </div>
                 </motion.div>
               </Link>
-            ))}
+            )})}
           </div>
         </div>
 
