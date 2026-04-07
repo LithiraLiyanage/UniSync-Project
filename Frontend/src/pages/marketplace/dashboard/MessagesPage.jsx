@@ -133,7 +133,7 @@ export default function MessagesPage() {
                   <Avatar initials={other?.initials || '?'} size={36} />
                   <div style={{ flex:1, overflow:'hidden' }}>
                     <div style={{ fontWeight:600, fontSize:13, color:'var(--text)', marginBottom:2 }}>
-                      {other?.firstName} {other?.lastName}
+                      {other?.name}
                     </div>
                     <div style={{ fontSize:12, color:'var(--muted)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                       {c.lastMessage || 'No messages yet'}
@@ -160,7 +160,7 @@ export default function MessagesPage() {
               <Avatar initials={getOther(active)?.initials || '?'} size={32} />
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight:700, fontSize:14, color:'var(--text2)' }}>
-                  {getOther(active)?.firstName} {getOther(active)?.lastName}
+                  {getOther(active)?.name}
                 </div>
                 <div style={{ fontSize:12, color:'var(--muted)' }}>
                   {active.order ? 'Order conversation' : 'Direct message'}
@@ -205,7 +205,7 @@ export default function MessagesPage() {
                   }}>
                     {!isMine && (
                       <span style={{ fontSize:11.5, color:'var(--muted)', marginBottom:4 }}>
-                        {m.sender?.firstName} {m.sender?.lastName}
+                        {m.sender?.name}
                       </span>
                     )}
                     <div style={{ position:'relative', maxWidth:'72%' }}

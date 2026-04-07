@@ -8,8 +8,7 @@ export default function ProfilePage() {
   const { user, updateUser } = useAuth();
 
   const [form, setForm] = useState({
-    firstName: user?.firstName || '',
-    lastName:  user?.lastName  || '',
+    name: user?.name || '',
     university: user?.university || '',
     bio:       user?.bio || '',
   });
@@ -24,17 +23,16 @@ export default function ProfilePage() {
 
   const saveProfile = async () => {
     const e = {};
-    if (!form.firstName || form.firstName.length < 2) e.firstName = 'Min 2 characters';
-    if (!form.lastName  || form.lastName.length  < 2) e.lastName  = 'Min 2 characters';
+    if (!form.name || form.name.length < 2) e.name = 'Min 2 characters';
     if (Object.keys(e).length) { setProfileErrors(e); return; }
     setProfileErrors({});
     setSavingProfile(true);
     try {
       const { data } = await api.put('/api/users/profile', {
-        firstName: form.firstName, lastName: form.lastName,
+        name: form.name,
         university: form.university, bio: form.bio,
       });
-      updateUser(data);
+      updateUser(data.data);
       toast.success('Profile updated!');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to update profile');
@@ -63,7 +61,7 @@ export default function ProfilePage() {
     }
   };
 
-  const initials = ((form.firstName[0] || '') + (form.lastName[0] || '')).toUpperCase() || '?';
+  const initials = form.name ? ((form.name.split(' ')[0][0] || '') + (form.name.split(' ').length > 1 ? form.name.split(' ').slice(-1)[0][0] : '')).toUpperCase() : '?';
 
   return (
     <div className="animate-up" style={{ maxWidth:680 }}>
@@ -77,7 +75,7 @@ export default function ProfilePage() {
           <Avatar initials={initials} size={72} style={{ borderRadius:20 }} />
           <div>
             <h2 style={{ fontFamily:"'Sora',sans-serif", fontWeight:800, fontSize:20, color:'var(--text2)' }}>
-              {form.firstName} {form.lastName}
+              {form.name}
             </h2>
             <p style={{ color:'var(--muted)', fontSize:14, marginTop:4 }}>{user?.email}</p>
             {user?.university && (
@@ -94,11 +92,9 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
-          <Input id="firstName" label="First Name" value={form.firstName} onChange={setF('firstName')}
-            error={profileErrors.firstName} required />
-          <Input id="lastName" label="Last Name" value={form.lastName} onChange={setF('lastName')}
-            error={profileErrors.lastName} required />
+        <div style={{ display:'grid', gap:14 }}>
+          <Input id="name" label="Full Name" value={form.name} onChange={setF('name')}
+            error={profileErrors.name} required />
         </div>
         <Input id="university" label="University" placeholder="e.g. MIT, Stanford, Oxford"
           value={form.university} onChange={setF('university')} />

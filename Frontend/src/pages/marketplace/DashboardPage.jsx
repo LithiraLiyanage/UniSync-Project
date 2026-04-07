@@ -140,7 +140,7 @@ export default function DashboardPage() {
             borderRadius:12, cursor:'pointer', transition:'all 0.15s',
           }}>
             <Avatar initials={user?.initials || 'U'} size={28} />
-            <span style={{ fontSize:13, fontWeight:600, color:'var(--text)' }}>{user?.firstName}</span>
+            <span style={{ fontSize:13, fontWeight:600, color:'var(--text)' }}>{user?.name}</span>
           </div>
         </div>
       </nav>
@@ -187,7 +187,7 @@ export default function DashboardPage() {
 
           {/* Footer */}
           <div style={{ marginTop:'auto', paddingTop:12, borderTop:'1px solid var(--border)' }}>
-            <div style={{ fontSize:13, fontWeight:600, color:'var(--text)', padding:'0 10px' }}>{user?.fullName || user?.firstName}</div>
+            <div style={{ fontSize:13, fontWeight:600, color:'var(--text)', padding:'0 10px' }}>{user?.name}</div>
             <div style={{ fontSize:12, color:'var(--muted)', padding:'2px 10px 10px' }}>{user?.email}</div>
             <button onClick={handleLogout} style={{
               display:'flex', alignItems:'center', gap:7, fontSize:12.5, fontWeight:600,

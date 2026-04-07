@@ -16,7 +16,7 @@ const REPORT_REASONS = [
 ];
 
 // ── 3-Dot Menu ────────────────────────────────────────────────────────
-const DotMenu = ({ service, user, onReport, onMessage, onAdminDelete }) => {
+const DotMenu = ({ service, user, onReport, onMessage, onAdminDelete, onRate }) => {
   const [open, setOpen] = useState(false);
   const isAdmin = user?.role === 'admin';
   const isOwner = service.seller?._id === user?._id || service.seller?.id === user?._id;
@@ -70,6 +70,16 @@ const DotMenu = ({ service, user, onReport, onMessage, onAdminDelete }) => {
               </button>
             )}
 
+            {/* Rate — available to all non-owners (completed order no longer strictly required) */}
+            {!isOwner && (
+              <button onClick={() => { setOpen(false); onRate(service); }} style={menuItemStyle()}>
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                </svg>
+                Rate Service
+              </button>
+            )}
+
             {/* Admin-only: delete */}
             {isAdmin && (
               <button onClick={() => { setOpen(false); onAdminDelete(service); }} style={menuItemStyle(true)}>
@@ -97,7 +107,7 @@ const menuItemStyle = (danger = false) => ({
 });
 
 // ── Service Card ──────────────────────────────────────────────────────
-const ServiceCard = ({ service, user, onOrder, onReport, onMessage, onAdminDelete }) => (
+const ServiceCard = ({ service, user, onOrder, onReport, onMessage, onAdminDelete, onRate }) => (
   <div style={{
     background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20,
     overflow: 'hidden', transition: 'all 0.2s',
@@ -107,7 +117,7 @@ const ServiceCard = ({ service, user, onOrder, onReport, onMessage, onAdminDelet
   >
     {/* Cover with 3-dot menu */}
     <div style={{ height: 80, background: service.coverGradient || 'linear-gradient(90deg,#5B8DEF,#3A6FD8)', position: 'relative' }}>
-      <DotMenu service={service} user={user} onReport={onReport} onMessage={onMessage} onAdminDelete={onAdminDelete} />
+      <DotMenu service={service} user={user} onReport={onReport} onMessage={onMessage} onAdminDelete={onAdminDelete} onRate={onRate} />
     </div>
 
     <div style={{ padding: 18 }}>
@@ -130,7 +140,7 @@ const ServiceCard = ({ service, user, onOrder, onReport, onMessage, onAdminDelet
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <Avatar initials={service.seller?.initials || '?'} size={22} />
         <span style={{ fontSize: 12, color: 'var(--muted)' }}>
-          {service.seller?.firstName} {service.seller?.lastName}
+          {service.seller?.name}
           {service.seller?.university ? ` · ${service.seller.university}` : ''}
         </span>
       </div>
@@ -190,6 +200,12 @@ export default function MarketplacePage() {
   const [reportReason, setReportReason] = useState('');
   const [reportDetails, setReportDetails] = useState('');
   const [reportLoading, setReportLoading] = useState(false);
+
+  // Rate modal
+  const [ratingService, setRatingService] = useState(null);
+  const [ratingScore, setRatingScore] = useState(5);
+  const [ratingComment, setRatingComment] = useState('');
+  const [ratingLoading, setRatingLoading] = useState(false);
 
   // Admin message modal
   const [messaging, setMessaging] = useState(null);
@@ -264,6 +280,32 @@ export default function MarketplacePage() {
       toast.error(err.response?.data?.message || 'Failed to submit report');
     } finally {
       setReportLoading(false);
+    }
+  };
+
+  // ── Rate ───────────────────────────────────────────────────────────
+  const handleRate = async () => {
+    setRatingLoading(true);
+    try {
+      const { data } = await api.post(`/api/services/${ratingService._id}/reviews`, {
+        rating: ratingScore,
+        comment: ratingComment,
+      });
+      toast.success(data.message || 'Rating submitted!');
+      setRatingService(null);
+      setRatingScore(5);
+      setRatingComment('');
+      // update local services list with new avg
+      setServices(prev => prev.map(s => {
+        if (s._id === ratingService._id) {
+          return { ...s, avgRating: data.avgRating, reviewCount: data.reviewCount || s.reviewCount + 1 };
+        }
+        return s;
+      }));
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to submit rating');
+    } finally {
+      setRatingLoading(false);
     }
   };
 
@@ -390,6 +432,7 @@ export default function MarketplacePage() {
               onReport={setReporting}
               onMessage={isAdmin ? setMessaging : handleStudentMessage}
               onAdminDelete={setAdminDeleting}
+              onRate={setRatingService}
             />
           ))}
         </div>
@@ -471,11 +514,47 @@ export default function MarketplacePage() {
         </div>
       </Modal>
 
+      {/* ── RATE MODAL ─────────────────────────────────────────────── */}
+      <Modal open={!!ratingService} onClose={() => { setRatingService(null); setRatingScore(5); setRatingComment(''); }}
+        title="Rate Service" width={440}>
+        <p style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 16 }}>
+          Rate <strong style={{ color: 'var(--text)' }}>{ratingService?.title}</strong> by {ratingService?.seller?.name}.
+        </p>
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>Rating (1-5 Stars)</label>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[1, 2, 3, 4, 5].map(star => (
+              <svg key={star} onClick={() => setRatingScore(star)} style={{ cursor: 'pointer', transition: 'transform 0.1s' }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.15)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                width="28" height="28" fill={star <= ratingScore ? 'var(--p)' : 'var(--inp-border)'} viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            ))}
+          </div>
+        </div>
+        <Textarea
+          id="comment" label="Review Comment (optional)"
+          placeholder="Share your experience..."
+          value={ratingComment}
+          onChange={e => setRatingComment(e.target.value)}
+          rows={3}
+        />
+        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+          <Button variant="secondary" fullWidth onClick={() => { setRatingService(null); setRatingScore(5); setRatingComment(''); }}>
+            Cancel
+          </Button>
+          <Button fullWidth loading={ratingLoading} onClick={handleRate}>
+            Submit Rating
+          </Button>
+        </div>
+      </Modal>
+
       {/* ── ADMIN MESSAGE MODAL ──────────────────────────────────────── */}
       <Modal open={!!messaging} onClose={() => { setMessaging(null); setMsgText(''); }}
         title="Message Service Owner" width={440}>
         <div style={{ marginBottom: 16, padding: '10px 14px', background: 'rgba(91,141,239,0.08)', borderRadius: 10, fontSize: 13, color: 'var(--p)' }}>
-          Sending as <strong>Admin</strong> to <strong>{messaging?.seller?.firstName} {messaging?.seller?.lastName}</strong>
+          Sending as <strong>Admin</strong> to <strong>{messaging?.seller?.name}</strong>
           {' '}about <strong>{messaging?.title}</strong>
         </div>
         <Textarea

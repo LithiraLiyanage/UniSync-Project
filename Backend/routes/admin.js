@@ -37,7 +37,7 @@ router.get('/reports', async (req, res) => {
     // Use lean() to get plain JS objects - avoids virtual field crashes
     const reports = await Report.find(filter)
       .populate('service', 'title category price isActive')
-      .populate('reportedBy', 'firstName lastName email')
+      .populate('reportedBy', 'name email')
       .sort('-createdAt')
       .lean();
 
@@ -45,7 +45,7 @@ router.get('/reports', async (req, res) => {
     const safe = reports.map(r => ({
       ...r,
       service: r.service || { title: 'Deleted Service', category: '—' },
-      reportedBy: r.reportedBy || { firstName: 'Deleted', lastName: 'User', email: '—' },
+      reportedBy: r.reportedBy || { name: 'Deleted User', email: '—' },
     }));
 
     console.log('[Admin] Returning', safe.length, 'reports');
@@ -64,7 +64,7 @@ router.put('/reports/:id', async (req, res) => {
       req.params.id,
       { status, adminNote },
       { new: true }
-    ).populate('service', 'title').populate('reportedBy', 'firstName lastName');
+    ).populate('service', 'title').populate('reportedBy', 'name');
 
     if (!report) return res.status(404).json({ message: 'Report not found' });
     res.json(report);
@@ -98,7 +98,7 @@ router.delete('/services/:id', async (req, res) => {
 router.get('/users', async (req, res) => {
   try {
     const users = await User.find({ role: 'student' })
-      .select('firstName lastName email university walletBalance isActive createdAt')
+      .select('name email university walletBalance isActive createdAt')
       .sort('-createdAt');
     res.json(users);
   } catch (err) {
@@ -155,7 +155,7 @@ router.post('/message', async (req, res) => {
 router.get('/services', async (req, res) => {
   try {
     const services = await Service.find()
-      .populate('seller', 'firstName lastName email initials')
+      .populate('seller', 'name email initials')
       .sort('-createdAt');
     res.json(services);
   } catch (err) {

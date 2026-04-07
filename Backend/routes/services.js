@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
       try {
         const seller = await User
           .findById(svc.seller)
-          .select('firstName lastName university initials')
+          .select('name initials university bio createdAt')
           .lean();
 
         if (!seller) continue;
@@ -90,8 +90,8 @@ router.get('/my', protect, async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const service = await Service.findById(req.params.id)
-      .populate('seller', 'firstName lastName university bio rating totalReviews initials createdAt')
-      .populate('reviews.buyer', 'firstName lastName initials');
+      .populate('seller', 'name initials university bio rating totalReviews createdAt')
+      .populate('reviews.buyer', 'name initials');
 
     if (!service) return res.status(404).json({ message: 'Service not found' });
     res.json(service);
@@ -127,7 +127,7 @@ router.post(
         isActive: true,
       });
 
-      await service.populate('seller', 'firstName lastName university initials');
+      await service.populate('seller', 'name initials university bio createdAt');
 
       // Notify all other users about the new service
       try {
@@ -141,7 +141,7 @@ router.post(
             recipient: u._id,
             type: 'new_service',
             title: 'New service available',
-            body: `${service.seller.firstName} ${service.seller.lastName} just added "${service.title}"`,
+            body: `${service.seller.name} just added "${service.title}"`,
             link: '/dashboard/marketplace',
             fromUser: req.user._id,
           }));
@@ -175,7 +175,7 @@ router.put('/:id', protect, async (req, res) => {
     });
 
     await service.save();
-    await service.populate('seller', 'firstName lastName university initials');
+    await service.populate('seller', 'name initials university bio createdAt');
     res.json(service);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
@@ -215,16 +215,18 @@ router.post(
       const service = await Service.findById(req.params.id);
       if (!service) return res.status(404).json({ message: 'Service not found' });
 
-      const order = await Order.findOne({ service: service._id, buyer: req.user._id, status: 'completed' });
-      if (!order) return res.status(400).json({ message: 'You must complete an order before reviewing' });
-
-      const already = service.reviews.find((r) => r.buyer.toString() === req.user._id.toString());
-      if (already) return res.status(400).json({ message: 'You already reviewed this service' });
-
-      service.reviews.push({ buyer: req.user._id, rating: req.body.rating, comment: req.body.comment });
+      const alreadyIndex = service.reviews.findIndex((r) => r.buyer.toString() === req.user._id.toString());
+      if (alreadyIndex !== -1) {
+        service.reviews[alreadyIndex].rating = req.body.rating;
+        service.reviews[alreadyIndex].comment = req.body.comment;
+      } else {
+        service.reviews.push({ buyer: req.user._id, rating: req.body.rating, comment: req.body.comment });
+      }
+      
       await service.save();
-      res.status(201).json({ message: 'Review added', avgRating: service.avgRating });
+      res.status(201).json({ message: 'Review added', avgRating: service.avgRating, reviewCount: service.reviewCount });
     } catch (err) {
+      console.error(err);
       res.status(500).json({ message: 'Server error' });
     }
   }

@@ -91,7 +91,7 @@ export default function OverviewPage() {
         }} />
         <div>
           <h2 style={{ fontFamily:"'Sora',sans-serif", fontWeight:800, fontSize:22, color:'var(--text2)', marginBottom:6 }}>
-            {greet}, {user?.firstName}! 👋
+            {greet}, {user?.name}! 👋
           </h2>
           <p style={{ color:'var(--muted)', fontSize:14 }}>Here's what's happening on your marketplace today.</p>
         </div>
@@ -167,7 +167,7 @@ export default function OverviewPage() {
               {recentOrders.map(o => (
                 <tr key={o._id} style={{ borderTop:'1px solid var(--border)' }}>
                   <td style={{ padding:'12px 16px', fontSize:13, fontWeight:600, color:'var(--text)' }}>{o.service?.title || '—'}</td>
-                  <td style={{ padding:'12px 16px', fontSize:13, color:'var(--muted)' }}>{o.seller?.firstName} {o.seller?.lastName}</td>
+                  <td style={{ padding:'12px 16px', fontSize:13, color:'var(--muted)' }}>{o.seller?.name}</td>
                   <td style={{ padding:'12px 16px', fontSize:13, color:'var(--muted)' }}>{new Date(o.createdAt).toLocaleDateString()}</td>
                   <td style={{ padding:'12px 16px' }}>
                     <span style={{

@@ -7,7 +7,7 @@ const { protect, adminOnly } = require('../middleware/authMiddleware');
 router.get('/', protect, async (req, res) => {
   try {
     const notifications = await Notification.find({ recipient: req.user._id })
-      .populate('fromUser', 'firstName lastName initials')
+      .populate('fromUser', 'name initials')
       .sort('-createdAt')
       .limit(30);
 

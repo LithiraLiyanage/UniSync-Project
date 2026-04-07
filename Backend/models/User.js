@@ -45,6 +45,11 @@ const userSchema = new mongoose.Schema(
       enum: ['student', 'admin'],
       default: 'student',
     },
+    bio: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     modules: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -54,8 +59,18 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true, // Adds createdAt and updatedAt automatically
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+// ─── Virtuals ───────────────────────────────────────────────────────────────
+userSchema.virtual('initials').get(function () {
+  if (!this.name) return '?';
+  const parts = this.name.trim().split(' ');
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+});
 
 // ─── Pre-save Hook: Hash password before saving ─────────────────────────────
 userSchema.pre('save', async function (next) {

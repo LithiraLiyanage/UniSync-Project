@@ -216,7 +216,7 @@ export default function AdminReportsPage() {
                   </td>
                   <td style={{ padding: '14px 16px' }}>
                     <div style={{ fontSize: 13, color: 'var(--text)', fontWeight: 500 }}>
-                      {r.reportedBy?.firstName} {r.reportedBy?.lastName}
+                      {r.reportedBy?.name}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--muted)' }}>
                       {r.reportedBy?.email}
@@ -273,7 +273,7 @@ export default function AdminReportsPage() {
               {[
                 { label: 'Service',     value: selected.service?.title || 'Deleted' },
                 { label: 'Category',    value: selected.service?.category || '—'    },
-                { label: 'Reported By', value: `${selected.reportedBy?.firstName} ${selected.reportedBy?.lastName}` },
+                { label: 'Reported By', value: `${selected.reportedBy?.name}` },
                 { label: 'Reason',      value: REASON_LABEL[selected.reason] || selected.reason },
               ].map(row => (
                 <div key={row.label} style={{ padding: '10px 12px', background: 'var(--card2)', borderRadius: 10 }}>

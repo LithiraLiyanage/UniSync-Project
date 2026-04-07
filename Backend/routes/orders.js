@@ -34,8 +34,8 @@ router.get('/', protect, async (req, res) => {
     const total = await Order.countDocuments(filter);
     const orders = await Order.find(filter)
       .populate('service', 'title category price coverGradient')
-      .populate('buyer', 'firstName lastName initials')
-      .populate('seller', 'firstName lastName initials')
+      .populate('buyer', 'name initials')
+      .populate('seller', 'name initials')
       .sort('-createdAt')
       .skip(skip)
       .limit(Number(limit));
@@ -52,8 +52,8 @@ router.get('/:id', protect, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
       .populate('service', 'title description category price deliveryDays coverGradient')
-      .populate('buyer', 'firstName lastName email initials')
-      .populate('seller', 'firstName lastName email initials university');
+      .populate('buyer', 'name email initials')
+      .populate('seller', 'name email initials university');
 
     if (!order) return res.status(404).json({ message: 'Order not found' });
 
@@ -115,8 +115,8 @@ router.post(
 
       await order.populate([
         { path: 'service', select: 'title category price' },
-        { path: 'buyer', select: 'firstName lastName initials' },
-        { path: 'seller', select: 'firstName lastName initials' },
+        { path: 'buyer', select: 'name initials' },
+        { path: 'seller', select: 'name initials' },
       ]);
 
       // Notify seller
@@ -125,7 +125,7 @@ router.post(
           recipient: order.seller._id,
           type: 'new_order',
           title: 'New Order Received',
-          body: `${order.buyer.firstName} placed an order for "${order.service.title}"`,
+          body: `${order.buyer.name} placed an order for "${order.service.title}"`,
           link: '/dashboard/orders',
           fromUser: order.buyer._id,
         });

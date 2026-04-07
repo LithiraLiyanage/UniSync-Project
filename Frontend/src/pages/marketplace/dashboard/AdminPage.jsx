@@ -216,7 +216,7 @@ export default function AdminPage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <Avatar initials={r.reportedBy?.initials || '?'} size={26} />
                           <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{r.reportedBy?.firstName} {r.reportedBy?.lastName}</div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{r.reportedBy?.name}</div>
                             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{r.reportedBy?.email}</div>
                           </div>
                         </div>
@@ -270,7 +270,7 @@ export default function AdminPage() {
                     <td style={{ padding: '12px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Avatar initials={s.seller?.initials || '?'} size={26} />
-                        <span style={{ fontSize: 13, color: 'var(--text)' }}>{s.seller?.firstName} {s.seller?.lastName}</span>
+                        <span style={{ fontSize: 13, color: 'var(--text)' }}>{s.seller?.name}</span>
                       </div>
                     </td>
                     <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--muted)' }}>{s.category}</td>
@@ -324,8 +324,8 @@ export default function AdminPage() {
                   <tr key={u._id} style={{ borderTop: '1px solid var(--border)' }}>
                     <td style={{ padding: '12px 16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <Avatar initials={((u.firstName?.[0] || '') + (u.lastName?.[0] || '')).toUpperCase() || '?'} size={30} />
-                        <span style={{ fontWeight: 600, fontSize: 13, color: 'var(--text)' }}>{u.firstName} {u.lastName}</span>
+                        <Avatar initials={u.initials || '?'} size={30} />
+                        <span style={{ fontWeight: 600, fontSize: 13, color: 'var(--text)' }}>{u.name}</span>
                       </div>
                     </td>
                     <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--muted)' }}>{u.email}</td>
@@ -368,7 +368,7 @@ export default function AdminPage() {
               {[
                 { label: 'Service', value: reviewModal.service?.title || 'Deleted' },
                 { label: 'Reason', value: reviewModal.reason },
-                { label: 'Reported by', value: `${reviewModal.reportedBy?.firstName} ${reviewModal.reportedBy?.lastName}` },
+                { label: 'Reported by', value: `${reviewModal.reportedBy?.name}` },
                 { label: 'Details', value: reviewModal.details || '—' },
               ].map(row => (
                 <div key={row.label} style={{ display: 'flex', gap: 12, padding: '10px 14px', background: 'var(--card2)', borderRadius: 10 }}>

@@ -10,7 +10,7 @@ router.get('/', protect, async (req, res) => {
     const convos = await Conversation.find({
       participants: req.user._id,
     })
-      .populate('participants', 'firstName lastName initials')
+      .populate('participants', 'name initials')
       .populate('order', 'service status')
       .sort('-lastMessageAt');
 
@@ -24,9 +24,9 @@ router.get('/', protect, async (req, res) => {
 router.get('/:id', protect, async (req, res) => {
   try {
     const convo = await Conversation.findById(req.params.id)
-      .populate('participants', 'firstName lastName initials email')
+      .populate('participants', 'name initials email')
       .populate('order', 'service status price')
-      .populate('messages.sender', 'firstName lastName initials');
+      .populate('messages.sender', 'name initials');
 
     if (!convo) return res.status(404).json({ message: 'Conversation not found' });
 
@@ -74,7 +74,7 @@ router.post(
         });
       }
 
-      await convo.populate('participants', 'firstName lastName initials email');
+      await convo.populate('participants', 'name initials email');
       res.status(201).json(convo);
     } catch {
       res.status(500).json({ message: 'Server error' });
@@ -112,7 +112,7 @@ router.post(
       convo.lastMessageAt = new Date();
       await convo.save();
 
-      await convo.populate('messages.sender', 'firstName lastName initials');
+      await convo.populate('messages.sender', 'name initials');
       const newMsg = convo.messages[convo.messages.length - 1];
       res.status(201).json(newMsg);
     } catch {

@@ -42,11 +42,12 @@ const updateUserProfile = async (req, res, next) => {
       throw new Error('User not found');
     }
 
-    const { name, email, university, year, semester, password } = req.body;
+    const { name, email, university, bio, year, semester, password } = req.body;
 
     if (name)                user.name       = name;
     if (email)               user.email      = email;
     if (university !== undefined) user.university = university;
+    if (bio !== undefined)        user.bio        = bio;
     if (year      !== undefined)  user.year       = parseNumber(year);
     if (semester  !== undefined)  user.semester   = parseNumber(semester);
 
@@ -68,6 +69,7 @@ const updateUserProfile = async (req, res, next) => {
         name:       updated.name,
         email:      updated.email,
         university: updated.university,
+        bio:        updated.bio,
         year:       updated.year,
         semester:   updated.semester,
         role:       updated.role,
@@ -78,4 +80,41 @@ const updateUserProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { getUserProfile, updateUserProfile };
+// ─── @desc    Update user password
+// ─── @route   PUT /api/users/password
+// ─── @access  Private
+const updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select('+password');
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      res.status(400);
+      throw new Error('Please provide current and new password');
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      res.status(401);
+      throw new Error('Incorrect current password');
+    }
+
+    if (newPassword.length < 6) {
+      res.status(400);
+      throw new Error('New password must be at least 6 characters');
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUserProfile, updateUserProfile, updatePassword };

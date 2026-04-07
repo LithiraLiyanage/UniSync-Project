@@ -155,8 +155,8 @@ export default function OrdersPage() {
                   </td>
                   <td style={{ padding:'14px 16px', fontSize:13, color:'var(--muted)' }}>
                     {roleTab === 0
-                      ? `${o.seller?.firstName} ${o.seller?.lastName}`
-                      : `${o.buyer?.firstName} ${o.buyer?.lastName}`}
+                      ? `${o.seller?.name}`
+                      : `${o.buyer?.name}`}
                   </td>
                   <td style={{ padding:'14px 16px', fontSize:13, color:'var(--muted)', whiteSpace:'nowrap' }}>
                     {new Date(o.createdAt).toLocaleDateString()}
