@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound';
 
 import StudyLearningLayout from './pages/StudyLearning/StudyLearningLayout';
 import StudentEarnSkills from './pages/StudentEarnSkills';
+import DashboardPage from './pages/marketplace/DashboardPage';
 import StudentTravelSmart from './pages/StudentTravelSmart';
 import StudentSocialEvents from './pages/StudentSocialEvents';
 
@@ -58,10 +59,15 @@ function App() {
                 <StudyLearningLayout />
               </ProtectedRoute>
             } />
-            <Route path="/earn" element={
+           {/* <Route path="/earn" element={
               <ProtectedRoute allowedRole="student">
                 <StudentEarnSkills />
               </ProtectedRoute>
+            } /> */}
+            <Route path="/dashboard/*" element={
+               <ProtectedRoute allowedRole="student">
+                   <DashboardPage />
+             </ProtectedRoute>
             } />
             <Route path="/travel" element={
               <ProtectedRoute allowedRole="student">

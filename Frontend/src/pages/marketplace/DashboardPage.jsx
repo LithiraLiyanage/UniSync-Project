@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
 import useAuth from '../../utils/useAuth';
-import { useTheme } from '../context/ThemeContext';
-import { Avatar } from '../components/UI';
+import { useTheme } from '../../context/ThemeContext';
+import { Avatar } from '../../components/UI';
 
 import OverviewPage    from './dashboard/OverviewPage';
 import MarketplacePage from './dashboard/MarketplacePage';
@@ -12,7 +12,7 @@ import MyServicesPage  from './dashboard/MyServicesPage';
 import ProfilePage       from './dashboard/ProfilePage';
 import AdminPage         from './dashboard/AdminPage';
 import AdminReportsPage    from './dashboard/AdminReportsPage';
-import NotificationBell    from '../components/NotificationBell';
+import NotificationBell    from '../../components/NotificationBell';
 
 const NAV_LINKS = [
   { to: '/dashboard',            label: 'Overview',    end: true },

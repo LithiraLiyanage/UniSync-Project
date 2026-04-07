@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import api from '../../utils/api';
-import useAuth from '../../utils/useAuth';
-import { Avatar, EmptyState } from '../../components/UI';
+import api from '../../../utils/api';
+import useAuth from '../../../utils/useAuth';
+import { Avatar, EmptyState } from '../../../components/UI';
 
 export default function MessagesPage() {
   const { user } = useAuth();

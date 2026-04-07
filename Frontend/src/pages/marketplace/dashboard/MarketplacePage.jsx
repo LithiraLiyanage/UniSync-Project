@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api from '../../utils/api';
-import useAuth from '../../utils/useAuth';
-import { Button, Stars, Modal, Textarea, EmptyState, Avatar, Select } from '../../components/UI';
+import api from '../../../utils/api';
+import useAuth from '../../../utils/useAuth';
+import { Button, Stars, Modal, Textarea, EmptyState, Avatar, Select } from '../../../components/UI';
 
 const CATEGORIES = ['All', 'Programming', 'Design', 'Writing', 'Tutoring', 'Music', 'Business', 'Other'];
 const REPORT_REASONS = [

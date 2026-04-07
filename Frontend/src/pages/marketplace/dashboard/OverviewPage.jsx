@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../../utils/useAuth';
-import { Card, Button } from '../../components/UI';
-import api from '../../utils/api';
+import useAuth from '../../../utils/useAuth';
+import { Card, Button } from '../../../components/UI';
+import api from '../../../utils/api';
 
 const StatCard = ({ icon, value, label, change, color }) => (
   <div style={{

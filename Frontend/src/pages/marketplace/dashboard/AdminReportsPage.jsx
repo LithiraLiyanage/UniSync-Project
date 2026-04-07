@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import api from '../../utils/api';
-import useAuth from '../../utils/useAuth';
-import { Button, Modal, Textarea, EmptyState, Card } from '../../components/UI';
+import api from '../../../utils/api';
+import useAuth from '../../../utils/useAuth';
+import { Button, Modal, Textarea, EmptyState, Card } from '../../../components/UI';
 
 const STATUS_COLOR = {
   pending:   'var(--acc)',

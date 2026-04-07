@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import api from '../../utils/api';
-import useAuth from '../../utils/useAuth';
-import { Button, Badge, Modal, Textarea, EmptyState } from '../../components/UI';
+import api from '../../../utils/api';
+import useAuth from '../../../utils/useAuth';
+import { Button, Badge, Modal, Textarea, EmptyState } from '../../../components/UI';
 
 const STATUS_LABEL = {
   pending:'Pending', in_progress:'In Progress',

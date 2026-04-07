@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import api from '../../utils/api';
-import useAuth from '../../utils/useAuth';
-import { Button, Input, Textarea, Card, Avatar } from '../../components/UI';
+import api from '../../../utils/api';
+import useAuth from '../../../utils/useAuth';
+import { Button, Input, Textarea, Card, Avatar } from '../../../components/UI';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuth();

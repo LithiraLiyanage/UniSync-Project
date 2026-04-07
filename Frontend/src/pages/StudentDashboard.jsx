@@ -36,7 +36,7 @@ const modules = [
   {
     id: 2, title: 'Earn & Skills',
     description: 'Find campus gigs, freelance work & skill-building tasks',
-    icon: FiDollarSign, link: '/earn',
+    icon: FiDollarSign, link: '/dashboard',   //earn
     gradient: 'linear-gradient(135deg, #065f46, #0d9488)',
     lightGradient: 'linear-gradient(135deg, #0d9488, #14b8a6)',
     glow: 'rgba(13,148,136,0.35)', lightGlow: 'rgba(13,148,136,0.18)',
