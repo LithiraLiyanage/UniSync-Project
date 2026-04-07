@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus, FiSearch, FiX, FiBook } from 'react-icons/fi';
 import api from '../../api/axios';
 import toast from 'react-hot-toast';
+import ModuleDetailsModal from './ModuleDetailsModal';
 
 const defaultModules = [
   { _id: '1', code: 'CS201', moduleName: 'Data Structures & Algorithms', credits: 4, year: 2, sem: 1 },
@@ -120,6 +121,7 @@ const ModulesPage = () => {
   const [formData, setFormData] = useState({ code: '', moduleName: '', year: 2, sem: 1 });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [selectedModule, setSelectedModule] = useState(null);
 
   useEffect(() => { fetchModules(); }, []);
 
@@ -242,7 +244,8 @@ const ModulesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 style={{ background: theme.gradient }}
-                className="relative overflow-hidden p-5 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all flex flex-col h-full"
+                className="relative overflow-hidden p-5 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all flex flex-col h-full cursor-pointer"
+                onClick={() => setSelectedModule(m)}
               >
                 <div style={{ background: 'rgba(255,255,255,0.07)' }} className="absolute -top-6 -right-6 w-28 h-28 rounded-full pointer-events-none" />
                 <div style={{ background: 'rgba(0,0,0,0.08)' }} className="absolute -bottom-8 -left-6 w-36 h-36 rounded-full pointer-events-none" />
@@ -263,7 +266,11 @@ const ModulesPage = () => {
                   <div style={{ width: `${progress}%`, background: theme.progressFill }} className="h-1.5 rounded-full transition-all duration-500" />
                 </div>
 
-                <button style={{ borderColor: theme.btnBorder, color: theme.btnText }} className="w-full py-2.5 text-sm font-bold border rounded-lg transition-colors relative z-10 hover:bg-white/10 backdrop-blur-sm">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setSelectedModule(m); }}
+                  style={{ borderColor: theme.btnBorder, color: theme.btnText }} 
+                  className="w-full py-2.5 text-sm font-bold border rounded-lg transition-colors relative z-10 hover:bg-white/10 backdrop-blur-sm"
+                >
                   View Details
                 </button>
               </motion.div>
@@ -278,6 +285,9 @@ const ModulesPage = () => {
           )}
         </div>
       )}
+
+      {/* ── Module Details Modal ── */}
+      <ModuleDetailsModal isOpen={!!selectedModule} onClose={() => setSelectedModule(null)} module={selectedModule} />
 
       {/* ── Add Module Modal ── */}
       <AnimatePresence>
