@@ -129,19 +129,22 @@ const COLOR_THEMES = [
 ];
 
 const defaultPapers = [
-  { _id: '1', module: { code: 'CS201', moduleName: 'Data Structures' }, year: 2025, semester: 1 },
-  { _id: '2', module: { code: 'CS202', moduleName: 'DBMS' }, year: 2024, semester: 1 },
-  { _id: '3', module: { code: 'CS203', moduleName: 'OOP' }, year: 2024, semester: 2 },
-  { _id: '4', module: { code: 'CS204', moduleName: 'Networks' }, year: 2023, semester: 1 },
-  { _id: '5', module: { code: 'CS205', moduleName: 'OS' }, year: 2022, semester: 2 },
-  { _id: '6', module: { code: 'CS206', moduleName: 'Math' }, year: 2025, semester: 1 },
+  { _id: '1', module: { code: 'CS201', moduleName: 'Data Structures' }, year: 2025, semester: 1, type: 'pdf', size: '2.4 MB' },
+  { _id: '2', module: { code: 'CS202', moduleName: 'DBMS' }, year: 2024, semester: 1, type: 'pdf', size: '1.8 MB' },
+  { _id: '3', module: { code: 'CS203', moduleName: 'OOP' }, year: 2024, semester: 2, type: 'doc', size: '3.1 MB' },
+  { _id: '4', module: { code: 'CS204', moduleName: 'Networks' }, year: 2023, semester: 1, type: 'pdf', size: '4.2 MB' },
+  { _id: '5', module: { code: 'CS205', moduleName: 'OS' }, year: 2022, semester: 2, type: 'pdf', size: '5.0 MB' },
+  { _id: '6', module: { code: 'CS206', moduleName: 'Math' }, year: 2025, semester: 1, type: 'pdf', size: '1.2 MB' },
 ];
+
+import PreviewModal from './PreviewModal';
 
 const PapersPage = ({ isDark = false }) => {
   const [papers, setPapers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [previewPaper, setPreviewPaper] = useState(null);
 
   useEffect(() => { fetchPapers(); }, []);
 
@@ -157,7 +160,14 @@ const PapersPage = ({ isDark = false }) => {
     }
   };
 
-  const handleDownload = (paperId) => toast.success('Downloading past paper...');
+  const handleDownload = (e, paper) => {
+    e.stopPropagation(); // prevent modal open if it's placed on the whole card
+    toast.success(`Download Started: ${paper.module?.code || ''}`);
+  };
+
+  const handlePreview = (paper) => {
+    setPreviewPaper(paper);
+  };
 
   const filteredPapers = papers.filter(p => {
     const s = searchTerm.toLowerCase();
@@ -331,25 +341,51 @@ const PapersPage = ({ isDark = false }) => {
 
                 {/* Module name */}
                 <h3
-                  className="text-sm font-bold mb-6 flex-grow relative z-10 leading-snug"
+                  className="text-sm font-bold mb-4 flex-grow relative z-10 leading-snug"
                   style={{ color: t.titleClr }}
                 >
                   {p.module?.moduleName || 'Unknown Module'}
                 </h3>
 
-                {/* Download button */}
-                <button
-                  onClick={() => handleDownload(p._id)}
-                  className="w-full flex justify-center items-center py-2.5 font-bold rounded-lg transition-all relative z-10 text-white text-sm gap-2"
-                  style={{
-                    background: theme.topBar,
-                    boxShadow: `0 4px 12px ${isDark ? theme.codeBorderDark : theme.codeBorderLight}`,
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
-                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-                >
-                  <FiDownload size={14} /> Download File
-                </button>
+                {/* File info */}
+                <div className="flex gap-3 mb-5 mt-auto relative z-10 text-xs font-semibold px-4 py-2 rounded-lg" style={{ background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }}>
+                  <span className="flex items-center gap-1.5" style={{ color: t.labelClr }}>
+                    <FiFileText /> {p.type?.toUpperCase() || 'PDF'}
+                  </span>
+                  <span className="text-gray-300 dark:text-gray-600">|</span>
+                  <span style={{ color: t.labelClr }}>
+                    {p.size || '2.4 MB'}
+                  </span>
+                </div>
+
+                {/* Actions */}
+                <div className="w-full flex gap-2 relative z-10">
+                  <button
+                    onClick={() => handlePreview(p)}
+                    className="flex-1 flex justify-center items-center py-2.5 font-bold rounded-lg transition-all text-sm gap-2"
+                    style={{
+                      border: `1px solid ${theme.topBar}`,
+                      color: theme.topBar,
+                      background: 'transparent'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={(e) => handleDownload(e, p)}
+                    className="flex-1 flex justify-center items-center py-2.5 font-bold rounded-lg transition-all text-white text-sm gap-2"
+                    style={{
+                      background: theme.topBar,
+                      boxShadow: `0 4px 12px ${isDark ? theme.codeBorderDark : theme.codeBorderLight}`,
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                  >
+                    <FiDownload size={14} /> Save
+                  </button>
+                </div>
               </motion.div>
             );
           })}
@@ -362,6 +398,9 @@ const PapersPage = ({ isDark = false }) => {
           )}
         </div>
       )}
+
+      {/* ── Preview Modal ── */}
+      <PreviewModal isOpen={!!previewPaper} onClose={() => setPreviewPaper(null)} paper={previewPaper} />
 
       {/* ── Upload Modal ── */}
       <AnimatePresence>

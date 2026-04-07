@@ -5,6 +5,8 @@ import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend
 } from 'chart.js';
 import { FiTrendingUp, FiActivity, FiTarget, FiAlertCircle, FiCpu, FiCalendar } from 'react-icons/fi';
+import ProgressModal from './ProgressModal';
+import TimetableModal from './TimetableModal';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend);
 
@@ -25,7 +27,8 @@ const mockProgress = [
 ];
 
 const ProgressPage = () => {
-  const [analyzing, setAnalyzing] = useState(false);
+  const [isProgressModalOpen, setProgressModalOpen] = useState(false);
+  const [isTimetableModalOpen, setTimetableModalOpen] = useState(false);
 
   const lineData = {
     labels: mockProgress.map(m => m.code),
@@ -53,14 +56,6 @@ const ProgressPage = () => {
       borderWidth: 0,
       hoverOffset: 4
     }]
-  };
-
-  const handleAIAction = (action) => {
-    setAnalyzing(true);
-    setTimeout(() => {
-      setAnalyzing(false);
-      alert(`AI Task: ${action} completed successfully. Insight summary sent to your inbox.`);
-    }, 1500);
   };
 
   return (
@@ -126,16 +121,14 @@ const ProgressPage = () => {
       {/* AI Actions */}
       <div className="flex flex-col sm:flex-row gap-4 bg-gradient-to-r from-violet-50 to-sky-50 dark:from-violet-900/20 dark:to-sky-900/20 p-4 border border-violet-200 dark:border-violet-800/50 rounded-xl">
         <button
-          onClick={() => handleAIAction('Analyze Progress')}
-          disabled={analyzing}
-          className="flex-1 flex justify-center items-center bg-white dark:bg-violet-900/30 border-2 border-violet-300 dark:border-violet-600 hover:bg-violet-500 hover:border-violet-500 hover:text-white text-violet-800 dark:text-violet-200 px-4 py-3 rounded-lg font-bold shadow-sm transition-all"
+          onClick={() => setProgressModalOpen(true)}
+          className="flex-1 flex justify-center items-center bg-white dark:bg-violet-900/30 border-2 border-violet-300 dark:border-violet-600 hover:bg-violet-500 hover:border-violet-500 hover:text-white text-violet-800 dark:text-violet-200 px-4 py-3 rounded-lg font-bold shadow-sm transition-all duration-300 transform hover:scale-105"
         >
-          {analyzing ? <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div> : <><FiCpu className="mr-2" /> Analyze My Progress</>}
+          <FiCpu className="mr-2" /> Analyze My Progress
         </button>
         <button
-          onClick={() => handleAIAction('Generate Timetable')}
-          disabled={analyzing}
-          className="flex-1 flex justify-center items-center bg-sky-500 hover:bg-sky-600 text-white border-2 border-sky-500 hover:border-sky-600 px-4 py-3 rounded-lg font-bold shadow-sm transition-all"
+          onClick={() => setTimetableModalOpen(true)}
+          className="flex-1 flex justify-center items-center bg-sky-500 hover:bg-sky-600 text-white border-2 border-sky-500 hover:border-sky-600 px-4 py-3 rounded-lg font-bold shadow-sm transition-all duration-300 transform hover:scale-105"
         >
           <FiCalendar className="mr-2" /> Generate Study Timetable
         </button>
@@ -143,14 +136,14 @@ const ProgressPage = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-card border border-border p-6 rounded-xl shadow-sm h-80 flex flex-col">
+        <div className="lg:col-span-2 bg-card border border-border p-6 rounded-xl shadow-sm h-80 flex flex-col hover:shadow-md transition-shadow">
           <h3 className="text-lg font-bold mb-4 text-text">Marks Trend</h3>
           <div className="relative flex-1 w-full min-h-0">
             <Line data={lineData} options={{ responsive: true, maintainAspectRatio: false }} />
           </div>
         </div>
 
-        <div className="bg-card border border-border p-6 rounded-xl shadow-sm h-80 flex flex-col items-center">
+        <div className="bg-card border border-border p-6 rounded-xl shadow-sm h-80 flex flex-col items-center hover:shadow-md transition-shadow">
           <h3 className="text-lg font-bold mb-4 text-text w-full text-left">Strengths Profile</h3>
           <div className="relative flex-1 w-full min-h-0 flex justify-center pb-2">
             <Doughnut data={pieData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }} />
@@ -159,7 +152,7 @@ const ProgressPage = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
         <div className="p-5 border-b border-border">
           <h3 className="text-lg font-bold text-text">Module Breakdown</h3>
         </div>
@@ -167,10 +160,10 @@ const ProgressPage = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800 border-b border-border">
-                <th className="py-3 px-5 text-xs font-semibold text-white uppercase tracking-wider">Module</th>
-                <th className="py-3 px-5 text-xs font-semibold text-white uppercase tracking-wider">Marks</th>
-                <th className="py-3 px-5 text-xs font-semibold text-white uppercase tracking-wider">Grade</th>
-                <th className="py-3 px-5 text-xs font-semibold text-white uppercase tracking-wider">Progress</th>
+                <th className="py-3 px-5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Module</th>
+                <th className="py-3 px-5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Marks</th>
+                <th className="py-3 px-5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Grade</th>
+                <th className="py-3 px-5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Progress</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -208,6 +201,8 @@ const ProgressPage = () => {
         </div>
       </div>
 
+      <ProgressModal isOpen={isProgressModalOpen} onClose={() => setProgressModalOpen(false)} mockProgress={mockProgress} />
+      <TimetableModal isOpen={isTimetableModalOpen} onClose={() => setTimetableModalOpen(false)} mockProgress={mockProgress} />
     </div>
   );
 };
