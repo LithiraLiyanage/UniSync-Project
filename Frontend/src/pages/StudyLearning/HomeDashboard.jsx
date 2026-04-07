@@ -103,7 +103,7 @@ const HomeDashboard = () => {
         <div className="bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-blue-200 dark:border-blue-800/50 group">
           <div>
             <h4 className="text-blue-900 dark:text-blue-900 text-sm font-bold uppercase tracking-wider mb-1">Modules</h4>
-            <div className="text-4xl font-extrabold text-white mt-2">6</div>
+            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">6</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiFolder size={32} />
@@ -113,7 +113,7 @@ const HomeDashboard = () => {
         <div className="bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-green-200 dark:border-green-800/50 group">
           <div>
             <h4 className="text-green-900 dark:text-green-900 text-sm font-bold uppercase tracking-wider mb-1">Past Papers</h4>
-            <div className="text-4xl font-extrabold text-white mt-2">14</div>
+            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">14</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-green-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiFileText size={32} />
@@ -123,7 +123,7 @@ const HomeDashboard = () => {
         <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-yellow-200 dark:border-yellow-800/50 group">
           <div>
             <h4 className="text-orange-700 dark:text-orange-700 text-sm font-bold uppercase tracking-wider mb-1">Current GPA</h4>
-            <div className="text-4xl font-extrabold text-white mt-2">3.2</div>
+            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">3.2</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-yellow-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiAward size={32} />
@@ -133,7 +133,7 @@ const HomeDashboard = () => {
         <div className="bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-red-200 dark:border-red-800/50 group">
           <div>
             <h4 className="text-red-900 dark:text-red-900 text-sm font-bold uppercase tracking-wider mb-1">Alerts</h4>
-            <div className="text-4xl font-extrabold text-white mt-2">3</div>
+            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">3</div>
           </div>
           <div className="w-16 h-16 rounded-2xl bg-red-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
             <FiBell size={32} />
