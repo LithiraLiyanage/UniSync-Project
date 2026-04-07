@@ -37,7 +37,7 @@ export default function MyServicesPage() {
   const fetchMyServices = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get('/services/my');
+      const { data } = await api.get('/api/services/my');
       setServices(data);
     } catch {
       toast.error('Failed to load services');
@@ -92,11 +92,11 @@ export default function MyServicesPage() {
     };
     try {
       if (modal === 'create') {
-        const { data } = await api.post('/services', payload);
+        const { data } = await api.post('/api/services', payload);
         setServices(prev => [data, ...prev]);
         toast.success('Service created! 🎉');
       } else {
-        const { data } = await api.put(`/services/${modal._id}`, payload);
+        const { data } = await api.put(`/api/services/${modal._id}`, payload);
         setServices(prev => prev.map(s => s._id === data._id ? data : s));
         toast.success('Service updated!');
       }
@@ -110,7 +110,7 @@ export default function MyServicesPage() {
 
   const toggleActive = async (svc) => {
     try {
-      const { data } = await api.put(`/services/${svc._id}`, { isActive: !svc.isActive });
+      const { data } = await api.put(`/api/services/${svc._id}`, { isActive: !svc.isActive });
       setServices(prev => prev.map(s => s._id === data._id ? data : s));
       toast.success(data.isActive ? 'Service is now Active — visible in marketplace!' : 'Service Deactivated — hidden from marketplace');
     } catch {
@@ -121,7 +121,7 @@ export default function MyServicesPage() {
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      await api.delete(`/services/${deleteTarget._id}`);
+      await api.delete(`/api/services/${deleteTarget._id}`);
       setServices(prev => prev.filter(s => s._id !== deleteTarget._id));
       toast.success('Service permanently deleted');
       setDeleteTarget(null);

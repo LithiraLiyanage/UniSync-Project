@@ -206,7 +206,7 @@ export default function MarketplacePage() {
       const params = new URLSearchParams();
       if (search) params.set('q', search);
       if (category !== 'All') params.set('category', category);
-      const { data } = await api.get(`/services?${params}`);
+      const { data } = await api.get(`/api/services?${params}`);
       setServices(data.services || []);
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
@@ -234,7 +234,7 @@ export default function MarketplacePage() {
       formData.append('requirements', requirements);
       formData.append('slip', slipFile);
 
-      await api.post('/orders', formData, {
+      await api.post('/api/orders', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       await refreshUser();
@@ -255,7 +255,7 @@ export default function MarketplacePage() {
     if (!reportReason) { toast.error('Please select a reason'); return; }
     setReportLoading(true);
     try {
-      await api.post('/reports', { serviceId: reporting._id, reason: reportReason, details: reportDetails });
+      await api.post('/api/reports', { serviceId: reporting._id, reason: reportReason, details: reportDetails });
       toast.success('Report submitted. Admin will review it shortly.');
       setReporting(null);
       setReportReason('');
@@ -272,7 +272,7 @@ export default function MarketplacePage() {
     if (!msgText.trim()) { toast.error('Please type a message'); return; }
     setMsgLoading(true);
     try {
-      await api.post('/admin/message', {
+      await api.post('/api/admin/message', {
         recipientId: messaging.seller?._id || messaging.seller?.id,
         message: msgText.trim(),
         serviceId: messaging._id,
@@ -292,7 +292,7 @@ export default function MarketplacePage() {
   const handleStudentMessage = async (service) => {
     try {
       const recipientId = service.seller?._id || service.seller?.id;
-      const { data } = await api.post('/messages', { recipientId });
+      const { data } = await api.post('/api/messages', { recipientId });
       navigate('/earn/messages');
       toast.success('Conversation opened!');
     } catch (err) {
@@ -304,7 +304,7 @@ export default function MarketplacePage() {
   const handleAdminDelete = async () => {
     setAdminDelLoading(true);
     try {
-      await api.delete(`/admin/services/${adminDeleting._id}`);
+      await api.delete(`/api/admin/services/${adminDeleting._id}`);
       setServices(prev => prev.filter(s => s._id !== adminDeleting._id));
       toast.success('Service removed by admin');
       setAdminDeleting(null);

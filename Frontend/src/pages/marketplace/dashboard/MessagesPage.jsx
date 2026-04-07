@@ -16,7 +16,7 @@ export default function MessagesPage() {
 
   const fetchConvos = async () => {
     try {
-      const { data } = await api.get('/messages');
+      const { data } = await api.get('/api/messages');
       setConvos(data);
       if (data.length && !active) setActive(data[0]);
     } catch {
@@ -29,7 +29,7 @@ export default function MessagesPage() {
   const fetchMessages = useCallback(async () => {
     if (!active?._id) return;
     try {
-      const { data } = await api.get(`/messages/${active._id}`);
+      const { data } = await api.get(`/api/messages/${active._id}`);
       setMessages(data.messages || []);
     } catch {}
   }, [active?._id]);
@@ -45,7 +45,7 @@ export default function MessagesPage() {
     if (!text.trim() || !active) return;
     setSending(true);
     try {
-      const { data: msg } = await api.post(`/messages/${active._id}/send`, { content: text.trim() });
+      const { data: msg } = await api.post(`/api/messages/${active._id}/send`, { content: text.trim() });
       setMessages(prev => [...prev, msg]);
       setText('');
       // update last message in sidebar
@@ -61,7 +61,7 @@ export default function MessagesPage() {
 
   const deleteMsg = async (msgId) => {
     try {
-      await api.delete(`/messages/${active._id}/messages/${msgId}`);
+      await api.delete(`/api/messages/${active._id}/messages/${msgId}`);
       setMessages(prev => prev.filter(m => m._id !== msgId));
       toast.success('Message deleted');
     } catch {
@@ -72,7 +72,7 @@ export default function MessagesPage() {
   const deleteChat = async () => {
     if (!window.confirm("Are you sure you want to delete this entire chat?")) return;
     try {
-      await api.delete(`/messages/${active._id}`);
+      await api.delete(`/api/messages/${active._id}`);
       setConvos(prev => prev.filter(c => c._id !== active._id));
       setActive(null);
       setMessages([]);

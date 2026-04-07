@@ -31,7 +31,7 @@ export default function AdminReportsPage() {
   // ── Fetch admin stats ──────────────────────────────────────────────
   const fetchStats = async () => {
     try {
-      const { data } = await api.get('/admin/stats');
+      const { data } = await api.get('/api/admin/stats');
       setStats(data);
     } catch (err) {
       console.error('Stats error:', err.response?.data?.message || err.message);
@@ -44,7 +44,7 @@ export default function AdminReportsPage() {
     try {
       const params = new URLSearchParams();
       if (statusFilter !== 'all') params.set('status', statusFilter);
-      const { data } = await api.get(`/admin/reports?${params}`);
+      const { data } = await api.get(`/api/admin/reports?${params}`);
       // admin/reports returns array directly
       setReports(Array.isArray(data) ? data : (data.reports || []));
     } catch (err) {
@@ -68,7 +68,7 @@ export default function AdminReportsPage() {
   const updateStatus = async (reportId, status) => {
     setActing(true);
     try {
-      const { data } = await api.put(`/admin/reports/${reportId}`, { status, adminNote });
+      const { data } = await api.put(`/api/admin/reports/${reportId}`, { status, adminNote });
       setReports(prev => prev.map(r => r._id === reportId ? data : r));
       toast.success('Report updated to: ' + status);
       setSelected(null);
@@ -85,7 +85,7 @@ export default function AdminReportsPage() {
   const removeService = async (report) => {
     setActing(true);
     try {
-      await api.delete(`/admin/services/${report.service?._id}`);
+      await api.delete(`/api/admin/services/${report.service?._id}`);
       toast.success('Service removed successfully');
       fetchReports();
       fetchStats();

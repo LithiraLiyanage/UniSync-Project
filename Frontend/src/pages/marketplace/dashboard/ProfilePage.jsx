@@ -30,7 +30,7 @@ export default function ProfilePage() {
     setProfileErrors({});
     setSavingProfile(true);
     try {
-      const { data } = await api.put('/users/profile', {
+      const { data } = await api.put('/api/users/profile', {
         firstName: form.firstName, lastName: form.lastName,
         university: form.university, bio: form.bio,
       });
@@ -53,7 +53,7 @@ export default function ProfilePage() {
     setPwdErrors({});
     setSavingPwd(true);
     try {
-      await api.put('/users/password', { currentPassword: pwd.current, newPassword: pwd.newPwd });
+      await api.put('/api/users/password', { currentPassword: pwd.current, newPassword: pwd.newPwd });
       toast.success('Password changed!');
       setPwd({ current:'', newPwd:'', confirm:'' });
     } catch (err) {

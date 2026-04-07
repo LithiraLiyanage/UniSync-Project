@@ -40,7 +40,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (user?.role !== 'admin') { navigate('/earn'); return; }
-    api.get('/admin/stats').then(r => setStats(r.data)).catch(() => {});
+    api.get('/api/admin/stats').then(r => setStats(r.data)).catch(() => {});
   }, []);
 
   // Fetch reports
@@ -48,7 +48,7 @@ export default function AdminPage() {
     setReportsLoading(true);
     try {
       const params = statusFilter !== 'all' ? `?status=${statusFilter}` : '';
-      const { data } = await api.get(`/admin/reports${params}`);
+      const { data } = await api.get(`/api/admin/reports${params}`);
       setReports(data);
     } catch { toast.error('Failed to load reports'); }
     finally { setReportsLoading(false); }
@@ -60,7 +60,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (tab !== 1) return;
     setServicesLoading(true);
-    api.get('/admin/services')
+    api.get('/api/admin/services')
       .then(r => setServices(r.data))
       .catch(() => toast.error('Failed to load services'))
       .finally(() => setServicesLoading(false));
@@ -70,7 +70,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (tab !== 2) return;
     setUsersLoading(true);
-    api.get('/admin/users')
+    api.get('/api/admin/users')
       .then(r => setUsers(r.data))
       .catch(() => toast.error('Failed to load users'))
       .finally(() => setUsersLoading(false));
@@ -80,12 +80,12 @@ export default function AdminPage() {
   const handleReview = async (status) => {
     setReviewLoading(true);
     try {
-      const { data } = await api.put(`/admin/reports/${reviewModal._id}`, { status, adminNote });
+      const { data } = await api.put(`/api/admin/reports/${reviewModal._id}`, { status, adminNote });
       setReports(prev => prev.map(r => r._id === data._id ? data : r));
       toast.success(`Report marked as ${status}`);
       setReviewModal(null);
       setAdminNote('');
-      api.get('/admin/stats').then(r => setStats(r.data)).catch(() => {});
+      api.get('/api/admin/stats').then(r => setStats(r.data)).catch(() => {});
     } catch { toast.error('Failed to update report'); }
     finally { setReviewLoading(false); }
   };
@@ -94,7 +94,7 @@ export default function AdminPage() {
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
-      await api.delete(`/admin/services/${deleteTarget._id}`);
+      await api.delete(`/api/admin/services/${deleteTarget._id}`);
       setServices(prev => prev.filter(s => s._id !== deleteTarget._id));
       toast.success('Service removed');
       setDeleteTarget(null);
@@ -105,7 +105,7 @@ export default function AdminPage() {
   // Suspend / activate user
   const handleSuspend = async (u) => {
     try {
-      const { data } = await api.put(`/admin/users/${u._id}/suspend`);
+      const { data } = await api.put(`/api/admin/users/${u._id}/suspend`);
       setUsers(prev => prev.map(x => x._id === u._id ? { ...x, isActive: data.isActive } : x));
       toast.success(data.message);
     } catch { toast.error('Failed to update user'); }
@@ -114,7 +114,7 @@ export default function AdminPage() {
   // Message user
   const handleMessageUser = async (u) => {
     try {
-      const { data } = await api.post('/messages', { recipientId: u._id });
+      const { data } = await api.post('/api/messages', { recipientId: u._id });
       navigate('/earn/messages');
       toast.success('Conversation opened');
     } catch { toast.error('Failed to open conversation'); }
@@ -392,7 +392,7 @@ export default function AdminPage() {
                 <Button size="sm" variant="danger" loading={reviewLoading}
                   onClick={async () => {
                     try {
-                      await api.delete(`/admin/services/${reviewModal.service?._id}`);
+                      await api.delete(`/api/admin/services/${reviewModal.service?._id}`);
                       await handleReview('resolved');
                       toast.success('Service removed and report resolved');
                     } catch { toast.error('Failed'); }

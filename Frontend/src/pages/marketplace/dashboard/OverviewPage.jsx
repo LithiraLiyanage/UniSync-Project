@@ -60,8 +60,8 @@ export default function OverviewPage() {
     refreshUser().catch(() => {});
     // fetch seller stats
     if (user?._id) {
-      api.get(`/users/${user._id}/stats`).then(r => setStats(r.data)).catch(() => {});
-      api.get('/orders?limit=5').then(r => setRecentOrders(r.data.orders || [])).catch(() => {});
+      api.get(`/api/users/${user._id}/stats`).then(r => setStats(r.data)).catch(() => {});
+      api.get('/api/orders?limit=5').then(r => setRecentOrders(r.data.orders || [])).catch(() => {});
     }
   }, []);
 

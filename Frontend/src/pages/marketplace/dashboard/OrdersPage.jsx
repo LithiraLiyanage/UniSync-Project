@@ -29,7 +29,7 @@ export default function OrdersPage() {
     try {
       const params = new URLSearchParams({ role });
       if (statusFilter !== 'all') params.set('status', statusFilter);
-      const { data } = await api.get(`/orders?${params}`);
+      const { data } = await api.get(`/api/orders?${params}`);
       setOrders(data.orders || []);
     } catch (err) {
       toast.error('Failed to load orders: ' + (err.response?.data?.message || err.message));
@@ -46,10 +46,10 @@ export default function OrdersPage() {
     try {
       const { order, action } = actionModal;
       if (action === 'cancel') {
-        await api.delete(`/orders/${order._id}`);
+        await api.delete(`/api/orders/${order._id}`);
         toast.success('Order cancelled');
       } else {
-        await api.put(`/orders/${order._id}/status`, {
+        await api.put(`/api/orders/${order._id}/status`, {
           status: action,
           deliveryNote: action === 'delivered' ? note : undefined,
           cancellationReason: action === 'cancelled' ? note : undefined,
