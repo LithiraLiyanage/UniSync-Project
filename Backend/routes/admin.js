@@ -7,7 +7,7 @@ const Service     = require('../models/Service');
 const Order       = require('../models/Order');
 const Report      = require('../models/Report');
 const Conversation = require('../models/Conversation');
-const { protect, adminOnly } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // All admin routes require auth + admin role
 router.use(protect, adminOnly);

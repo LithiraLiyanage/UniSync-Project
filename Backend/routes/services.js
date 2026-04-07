@@ -6,7 +6,7 @@ const Service = require('../models/Service');
 const Order = require('../models/Order');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
-const { protect } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // ── GET /api/services  – Public marketplace listing ──────────────────
 router.get('/', async (req, res) => {

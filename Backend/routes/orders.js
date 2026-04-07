@@ -9,7 +9,7 @@ const Order = require('../models/Order');
 const Service = require('../models/Service');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
-const { protect } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // Setup multer for slip uploads
 const uploadDir = path.join(__dirname, '../uploads/slips');

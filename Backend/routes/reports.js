@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Report = require('../models/Report');
-const { protect } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // ── POST /api/reports  – Student submits a report ────────────────────
 router.post(

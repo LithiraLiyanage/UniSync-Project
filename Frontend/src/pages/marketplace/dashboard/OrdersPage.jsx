@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import api from '../../utils/api';
-import { useAuth } from '../../context/AuthContext';
+import useAuth from '../../utils/useAuth';
 import { Button, Badge, Modal, Textarea, EmptyState } from '../../components/UI';
 
 const STATUS_LABEL = {

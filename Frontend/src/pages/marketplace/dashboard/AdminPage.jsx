@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../../utils/api';
-import { useAuth } from '../../context/AuthContext';
+import useAuth from '../../utils/useAuth';
 import { Button, Modal, Textarea, Avatar, Card, EmptyState } from '../../components/UI';
 
 const TABS = ['Reports', 'Services', 'Users'];

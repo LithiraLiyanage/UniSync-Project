@@ -69,6 +69,13 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/resources', resourceRoutes);
 
 app.use('/uploads', express.static('uploads'));
+//Marketplace routes
+app.use('/api/services', require('./routes/services'));
+app.use('/api/orders',   require('./routes/orders'));
+app.use('/api/messages', require('./routes/messages'));
+app.use('/api/reports',       require('./routes/reports'));
+app.use('/api/admin',         require('./routes/admin'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 
 // ─── Error Handling Middleware ───────────────────────────────────────────────

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import useAuth from '../../utils/useAuth';
 import { useTheme } from '../context/ThemeContext';
 import { Avatar } from '../components/UI';
 

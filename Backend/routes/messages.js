@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Conversation = require('../models/Conversation');
-const { protect } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 // ── GET /api/messages  – Get user's conversations ─────────────────────
 router.get('/', protect, async (req, res) => {
