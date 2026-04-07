@@ -15,32 +15,31 @@ export const AuthContextProvider = ({ children }) => {
   
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      if (!token || token === 'undefined') {
-        if (token === 'undefined') {
-          localStorage.removeItem('token');
-          setToken(null);
-        }
-        setLoading(false);
-        return;
-      }
-      
-      try {
-        const { data } = await api.get('/api/auth/me');
-        setUser(data.data);
-      } catch (error) {
-        // Handled by axios interceptor if 401, but we reset state here
-        setToken(null);
-        setUser(null);
+  const refreshUser = async () => {
+    if (!token || token === 'undefined') {
+      if (token === 'undefined') {
         localStorage.removeItem('token');
-        localStorage.removeItem('role');
-      } finally {
-        setLoading(false);
+        setToken(null);
       }
-    };
+      setLoading(false);
+      return;
+    }
     
-    checkUser();
+    try {
+      const { data } = await api.get('/api/auth/me');
+      setUser(data.data);
+    } catch (error) {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshUser();
   }, [token]);
 
   const login = async (email, password, role) => {
@@ -120,7 +119,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

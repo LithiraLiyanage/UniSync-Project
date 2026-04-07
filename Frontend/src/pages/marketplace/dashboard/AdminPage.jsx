@@ -39,7 +39,7 @@ export default function AdminPage() {
   const [usersLoading, setUsersLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.role !== 'admin') { navigate('/dashboard'); return; }
+    if (user?.role !== 'admin') { navigate('/earn'); return; }
     api.get('/admin/stats').then(r => setStats(r.data)).catch(() => {});
   }, []);
 
@@ -115,7 +115,7 @@ export default function AdminPage() {
   const handleMessageUser = async (u) => {
     try {
       const { data } = await api.post('/messages', { recipientId: u._id });
-      navigate('/dashboard/messages');
+      navigate('/earn/messages');
       toast.success('Conversation opened');
     } catch { toast.error('Failed to open conversation'); }
   };

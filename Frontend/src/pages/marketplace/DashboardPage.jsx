@@ -15,25 +15,25 @@ import AdminReportsPage    from './dashboard/AdminReportsPage';
 import NotificationBell    from '../../components/NotificationBell';
 
 const NAV_LINKS = [
-  { to: '/dashboard',            label: 'Overview',    end: true },
-  { to: '/dashboard/marketplace', label: 'Marketplace' },
-  { to: '/dashboard/orders',      label: 'Orders'      },
-  { to: '/dashboard/messages',    label: 'Messages'    },
+  { to: '/earn',            label: 'Overview',    end: true },
+  { to: '/earn/marketplace', label: 'Marketplace' },
+  { to: '/earn/orders',      label: 'Orders'      },
+  { to: '/earn/messages',    label: 'Messages'    },
 ];
 
 const getSidebarItems = (isAdmin) => [
-  { to: '/dashboard',              label: 'Overview',      icon: 'home',     end: true },
-  { to: '/dashboard/marketplace',  label: 'Marketplace',   icon: 'shop'      },
+  { to: '/earn',              label: 'Overview',      icon: 'home',     end: true },
+  { to: '/earn/marketplace',  label: 'Marketplace',   icon: 'shop'      },
   ...(!isAdmin ? [
-    { to: '/dashboard/orders',     label: 'My Orders',     icon: 'orders'    },
-    { to: '/dashboard/messages',   label: 'Messages',      icon: 'chat'      },
-    { to: '/dashboard/my-services',label: 'My Services',   icon: 'services', section: 'Seller' },
+    { to: '/earn/orders',     label: 'My Orders',     icon: 'orders'    },
+    { to: '/earn/messages',   label: 'Messages',      icon: 'chat'      },
+    { to: '/earn/my-services',label: 'My Services',   icon: 'services', section: 'Seller' },
   ] : [
-    { to: '/dashboard/messages',   label: 'Messages',      icon: 'chat',     section: 'Admin Tools' },
-    { to: '/dashboard/admin/reports', label: 'Reports',    icon: 'reports'   },
+    { to: '/earn/messages',   label: 'Messages',      icon: 'chat',     section: 'Admin Tools' },
+    { to: '/earn/admin/reports', label: 'Reports',    icon: 'reports'   },
   ]),
-  { to: '/dashboard/profile',      label: 'Profile',       icon: 'profile'   },
-  { to: '/dashboard/admin',        label: 'Admin Panel',   icon: 'profile',  adminOnly: true },
+  { to: '/earn/profile',      label: 'Profile',       icon: 'profile'   },
+  { to: '/earn/admin',        label: 'Admin Panel',   icon: 'profile',  adminOnly: true },
 ];
 
 const SvgIcon = ({ name }) => {
@@ -134,7 +134,7 @@ export default function DashboardPage() {
           </button>
 
           {/* User chip */}
-          <div onClick={() => navigate('/dashboard/profile')} style={{
+          <div onClick={() => navigate('/earn/profile')} style={{
             display:'flex', alignItems:'center', gap:8, padding:'5px 10px 5px 5px',
             background:'var(--inp-bg)', border:'1px solid var(--border)',
             borderRadius:12, cursor:'pointer', transition:'all 0.15s',

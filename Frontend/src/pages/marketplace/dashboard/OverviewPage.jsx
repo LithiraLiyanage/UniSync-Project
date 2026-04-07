@@ -95,7 +95,7 @@ export default function OverviewPage() {
           </h2>
           <p style={{ color:'var(--muted)', fontSize:14 }}>Here's what's happening on your marketplace today.</p>
         </div>
-        <Button onClick={() => navigate('/dashboard/marketplace')} variant="secondary">
+        <Button onClick={() => navigate('/earn/marketplace')} variant="secondary">
           Browse Services →
         </Button>
       </div>
@@ -127,16 +127,16 @@ export default function OverviewPage() {
           <div style={{ fontFamily:"'Sora',sans-serif", fontWeight:700, fontSize:16, color:'var(--text2)', marginBottom:4 }}>Quick Actions</div>
           <div style={{ fontSize:12, color:'var(--muted)', marginBottom:20 }}>Get started quickly</div>
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-            <Button fullWidth onClick={() => navigate('/dashboard/my-services')} variant="primary" size="sm">
+            <Button fullWidth onClick={() => navigate('/earn/my-services')} variant="primary" size="sm">
               ＋ Create a Service
             </Button>
-            <Button fullWidth onClick={() => navigate('/dashboard/marketplace')} variant="secondary" size="sm">
+            <Button fullWidth onClick={() => navigate('/earn/marketplace')} variant="secondary" size="sm">
               🛒 Browse Marketplace
             </Button>
-            <Button fullWidth onClick={() => navigate('/dashboard/orders')} variant="secondary" size="sm">
+            <Button fullWidth onClick={() => navigate('/earn/orders')} variant="secondary" size="sm">
               📦 View My Orders
             </Button>
-            <Button fullWidth onClick={() => navigate('/dashboard/messages')} variant="secondary" size="sm">
+            <Button fullWidth onClick={() => navigate('/earn/messages')} variant="secondary" size="sm">
               💬 Messages
             </Button>
           </div>
@@ -147,12 +147,12 @@ export default function OverviewPage() {
       <Card style={{ padding:0, overflow:'hidden' }}>
         <div style={{ padding:'18px 22px', borderBottom:'1px solid var(--border)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <h3 style={{ fontFamily:"'Sora',sans-serif", fontWeight:700, fontSize:16, color:'var(--text2)' }}>Recent Orders</h3>
-          <Button size="sm" variant="ghost" onClick={() => navigate('/dashboard/orders')}>View all →</Button>
+          <Button size="sm" variant="ghost" onClick={() => navigate('/earn/orders')}>View all →</Button>
         </div>
         {recentOrders.length === 0 ? (
           <div style={{ padding:'40px 22px', textAlign:'center', color:'var(--muted)' }}>
             <div style={{ fontSize:32, marginBottom:8 }}>📭</div>
-            <p>No orders yet. <span style={{ color:'var(--p)', cursor:'pointer' }} onClick={() => navigate('/dashboard/marketplace')}>Browse the marketplace!</span></p>
+            <p>No orders yet. <span style={{ color:'var(--p)', cursor:'pointer' }} onClick={() => navigate('/earn/marketplace')}>Browse the marketplace!</span></p>
           </div>
         ) : (
           <table style={{ width:'100%', borderCollapse:'collapse' }}>

@@ -51,21 +51,21 @@ const MainPage = () => {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex-grow flex items-center relative overflow-hidden bg-[var(--bg)] transition-colors duration-300">
-        
+
         {/* Animated Background Elements */}
-        <motion.div 
-          animate={{ y: [0, -20, 0], opacity: [0.5, 0.8, 0.5] }} 
+        <motion.div
+          animate={{ y: [0, -20, 0], opacity: [0.5, 0.8, 0.5] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-20 right-10 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
         />
-        <motion.div 
-          animate={{ y: [0, 30, 0], opacity: [0.4, 0.7, 0.4] }} 
+        <motion.div
+          animate={{ y: [0, 30, 0], opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-10 left-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
         />
 
         <div className="max-w-7xl mx-auto w-full text-center relative z-10">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -73,8 +73,8 @@ const MainPage = () => {
           >
             Your Smart Campus <span className="text-dark-blue">Assistant</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -82,8 +82,8 @@ const MainPage = () => {
           >
             Manage studies, find gigs, travel smart & connect with peers. One platform to power your entire university experience.
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}

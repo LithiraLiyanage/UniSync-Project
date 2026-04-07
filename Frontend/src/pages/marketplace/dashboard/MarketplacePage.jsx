@@ -242,7 +242,7 @@ export default function MarketplacePage() {
       setOrdering(null);
       setRequirements('');
       setSlipFile(null);
-      navigate('/dashboard/orders');
+      navigate('/earn/orders');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to place order');
     } finally {
@@ -280,7 +280,7 @@ export default function MarketplacePage() {
       toast.success('Message sent to service owner!');
       setMessaging(null);
       setMsgText('');
-      navigate('/dashboard/messages');
+      navigate('/earn/messages');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to send message');
     } finally {
@@ -293,7 +293,7 @@ export default function MarketplacePage() {
     try {
       const recipientId = service.seller?._id || service.seller?.id;
       const { data } = await api.post('/messages', { recipientId });
-      navigate('/dashboard/messages');
+      navigate('/earn/messages');
       toast.success('Conversation opened!');
     } catch (err) {
       toast.error('Failed to open conversation');
@@ -334,7 +334,7 @@ export default function MarketplacePage() {
           </p>
         </div>
         {isAdmin && (
-          <Button variant="secondary" size="sm" onClick={() => navigate('/dashboard/admin')}>
+          <Button variant="secondary" size="sm" onClick={() => navigate('/earn/admin')}>
             ⚙️ Admin Panel
           </Button>
         )}
