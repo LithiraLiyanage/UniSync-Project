@@ -1,0 +1,8 @@
+{
+  "short_name": "UniSync",
+  "name": "UniSync – University Marketplace",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0A0F1E",
+  "background_color": "#0A0F1E"
+}
