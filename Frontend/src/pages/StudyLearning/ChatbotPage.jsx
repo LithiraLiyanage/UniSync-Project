@@ -1,6 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSend, FiCpu, FiUser, FiZap, FiSun, FiMoon, FiTrash2 } from 'react-icons/fi';
+import { FiSend, FiCpu, FiUser, FiZap, FiTrash2 } from 'react-icons/fi';
+import toast from 'react-hot-toast';
+
+const ACADEMIC_KEYWORDS = [
+  'student', 'academic', 'lecture', 'module', 'subject', 'exam', 
+  'assignment', 'study', 'math', 'dsa', 'network', 'os', 'oop', 
+  'dbms', 'course', 'grade', 'gpa', 'university', 'college', 
+  'professor', 'teacher', 'class', 'paper', 'schedule', 'algorithm', 
+  'database', 'timetable', 'project', 'pass', 'fail', 'mark', 'read', 'learn'
+];
+
+const isAcademicQuestion = (text) => {
+  const lowerText = text.toLowerCase();
+  return ACADEMIC_KEYWORDS.some(k => lowerText.includes(k));
+};
 
 const suggestedQuestions = [
   "Explain Dijkstra's algorithm simply",
@@ -42,7 +56,15 @@ const INITIAL_MESSAGES = [
 ];
 
 const ChatbotPage = () => {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
+  
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -59,6 +81,18 @@ const ChatbotPage = () => {
     if (e) e.preventDefault();
     const text = customText || input;
     if (!text.trim()) return;
+
+    if (!isAcademicQuestion(text)) {
+      toast.error("Please ask questions related to your studies, modules, or academic topics.");
+      // Apply a brief red error flash to the input box via an error state (handled directly via DOM or CSS classes if needed)
+      const inputEl = document.getElementById('chat-input');
+      if (inputEl) {
+        inputEl.style.boxShadow = '0 0 0 2px #ef4444';
+        setTimeout(() => { inputEl.style.boxShadow = isDark ? 'inset 0 2px 8px rgba(0,0,0,0.6)' : 'inset 0 2px 4px rgba(0,0,0,0.04)'; }, 2000);
+      }
+      return;
+    }
+
     setMessages(prev => [...prev, { id: Date.now(), sender: 'user', text: text.trim() }]);
     setInput('');
     setIsTyping(true);
@@ -241,15 +275,7 @@ const ChatbotPage = () => {
               </button>
             )}
 
-            {/* Dark/Light toggle */}
-            <button
-              onClick={() => setIsDark(d => !d)}
-              className="w-8 h-8 rounded-full flex items-center justify-center transition-all focus:outline-none"
-              style={{ background: t.toggleBg, border: `1px solid ${t.toggleBdr}`, color: t.toggleClr }}
-              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {isDark ? <FiSun size={14} /> : <FiMoon size={14} />}
-            </button>
+            {/* Dark/Light toggle removed - controlled globally */}
           </div>
         </div>
 
@@ -359,6 +385,7 @@ const ChatbotPage = () => {
         <div className="p-4" style={{ background: t.panelBg, borderTop: `1px solid ${t.panelBorder}` }}>
           <form onSubmit={handleSend} className="relative flex items-center">
             <input
+              id="chat-input"
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}

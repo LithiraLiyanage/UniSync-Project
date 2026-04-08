@@ -26,6 +26,18 @@ const HomeDashboard = () => {
     setDateStr(d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
   }, []);
 
+  const [isDark, setIsDark] = useState(
+    document.documentElement.classList.contains('dark')
+  );
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   const chartData = {
     labels: ['DSA', 'DBMS', 'OOP', 'Networks', 'OS'],
     datasets: [
@@ -55,25 +67,31 @@ const HomeDashboard = () => {
     ]
   };
 
+  const textColor = isDark ? '#F9FAFB' : '#111827';
+  const gridColor = isDark ? '#374151' : '#E5E7EB';
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 300,
+    },
     scales: {
       y: {
         min: 0,
         max: 100,
-        ticks: { color: '#ffffff', font: { weight: 'bold' } },
-        grid: { color: 'rgba(255,255,255,0.1)' }
+        ticks: { color: textColor, font: { weight: 'bold', size: 13 } },
+        grid: { color: gridColor }
       },
       x: {
-        ticks: { color: '#ffffff', font: { weight: 'bold' } },
-        grid: { color: 'rgba(255,255,255,0.1)' }
+        ticks: { color: textColor, font: { weight: 'bold', size: 13 } },
+        grid: { color: gridColor }
       }
     },
     plugins: {
       legend: {
         position: 'top',
-        labels: { color: '#ffffff', font: { weight: 'bold' } }
+        labels: { color: textColor, font: { weight: 'bold', size: 13 } }
       }
     }
   };
@@ -100,43 +118,43 @@ const HomeDashboard = () => {
 
       {/* Top Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-blue-200 dark:border-blue-800/50 group">
+        <div className="bg-gradient-to-r from-blue-50 to-white dark:from-blue-900/20 dark:to-blue-800/5 p-5 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 flex items-center justify-between border border-blue-100 dark:border-blue-800/30 group">
           <div>
-            <h4 className="text-blue-900 dark:text-blue-900 text-sm font-bold uppercase tracking-wider mb-1">Modules</h4>
-            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">6</div>
+            <h4 className="text-blue-800 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-1">Modules</h4>
+            <div className="text-4xl font-extrabold text-gray-800 dark:text-white mt-1">6</div>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-blue-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
-            <FiFolder size={32} />
+          <div className="w-14 h-14 rounded-xl bg-blue-400 dark:bg-blue-500/80 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
+            <FiFolder size={28} />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-green-200 dark:border-green-800/50 group">
+        <div className="bg-gradient-to-r from-green-50 to-white dark:from-green-900/20 dark:to-green-800/5 p-5 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 flex items-center justify-between border border-green-100 dark:border-green-800/30 group">
           <div>
-            <h4 className="text-green-900 dark:text-green-900 text-sm font-bold uppercase tracking-wider mb-1">Past Papers</h4>
-            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">14</div>
+            <h4 className="text-green-800 dark:text-green-300 text-xs font-bold uppercase tracking-wider mb-1">Past Papers</h4>
+            <div className="text-4xl font-extrabold text-gray-800 dark:text-white mt-1">14</div>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-green-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
-            <FiFileText size={32} />
+          <div className="w-14 h-14 rounded-xl bg-green-400 dark:bg-green-500/80 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
+            <FiFileText size={28} />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-yellow-200 dark:border-yellow-800/50 group">
+        <div className="bg-gradient-to-r from-yellow-50 to-white dark:from-yellow-900/20 dark:to-yellow-800/5 p-5 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 flex items-center justify-between border border-yellow-100 dark:border-yellow-800/30 group">
           <div>
-            <h4 className="text-orange-700 dark:text-orange-700 text-sm font-bold uppercase tracking-wider mb-1">Current GPA</h4>
-            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">3.2</div>
+            <h4 className="text-yellow-700 dark:text-yellow-400 text-xs font-bold uppercase tracking-wider mb-1">Current GPA</h4>
+            <div className="text-4xl font-extrabold text-gray-800 dark:text-white mt-1">3.2</div>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-yellow-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
-            <FiAward size={32} />
+          <div className="w-14 h-14 rounded-xl bg-yellow-400 dark:bg-yellow-500/80 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
+            <FiAward size={28} />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/20 p-6 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-between border border-red-200 dark:border-red-800/50 group">
+        <div className="bg-gradient-to-r from-red-50 to-white dark:from-red-900/20 dark:to-red-800/5 p-5 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 flex items-center justify-between border border-red-100 dark:border-red-800/30 group">
           <div>
-            <h4 className="text-red-900 dark:text-red-900 text-sm font-bold uppercase tracking-wider mb-1">Alerts</h4>
-            <div className="text-5xl font-black text-gray-900 dark:text-white mt-2">3</div>
+            <h4 className="text-red-800 dark:text-red-300 text-xs font-bold uppercase tracking-wider mb-1">Alerts</h4>
+            <div className="text-4xl font-extrabold text-gray-800 dark:text-white mt-1">3</div>
           </div>
-          <div className="w-16 h-16 rounded-2xl bg-red-500 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
-            <FiBell size={32} />
+          <div className="w-14 h-14 rounded-xl bg-red-400 dark:bg-red-500/80 text-white flex items-center justify-center shadow-inner group-hover:rotate-6 transition-transform">
+            <FiBell size={28} />
           </div>
         </div>
       </div>
