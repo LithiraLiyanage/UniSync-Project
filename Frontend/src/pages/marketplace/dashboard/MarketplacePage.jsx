@@ -21,6 +21,8 @@ const DotMenu = ({ service, user, onReport, onMessage, onAdminDelete, onRate }) 
   const isAdmin = user?.role === 'admin';
   const isOwner = service.seller?._id === user?._id || service.seller?.id === user?._id;
 
+  if (isOwner && !isAdmin) return null;
+
   return (
     <div style={{ position: 'relative' }}>
       <button
@@ -131,11 +133,18 @@ const ServiceCard = ({ service, user, onOrder, onReport, onMessage, onAdminDelet
 
       <h3 style={{
         fontFamily: "'Sora',sans-serif", fontWeight: 700, fontSize: 14,
-        color: 'var(--text2)', marginBottom: 10, lineHeight: 1.4,
+        color: 'var(--text2)', marginBottom: 6, lineHeight: 1.4,
         display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
       }}>
         {service.title}
       </h3>
+
+      <p style={{
+        fontSize: 12, color: 'var(--muted)', marginBottom: 12, lineHeight: 1.4,
+        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+      }}>
+        {service.description}
+      </p>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <Avatar initials={service.seller?.initials || '?'} size={22} />
