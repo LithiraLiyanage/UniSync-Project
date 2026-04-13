@@ -23,7 +23,7 @@ const modules = [
     darkGlow: 'rgba(109,40,217,0.25)', lightGlow: 'rgba(109,40,217,0.12)',
   },
   {
-    id: 2, title: 'Earn & Skills', desc: 'Moderate marketplace', link: '/admin/earn',
+    id: 2, title: 'Earn & Skills', desc: 'Moderate marketplace', link: '/earn/admin',
     color: '#0d9488',
     darkBg: 'rgba(13,148,136,0.1)', lightBg: '#f0fdfa',
     darkBorder: 'rgba(13,148,136,0.25)', lightBorder: '#99f6e4',

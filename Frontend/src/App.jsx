@@ -65,7 +65,7 @@ function App() {
               </ProtectedRoute>
             } /> */}
             <Route path="/earn/*" element={
-               <ProtectedRoute allowedRole="student">
+               <ProtectedRoute allowedRoles={['student', 'admin']}>
                    <DashboardPage />
              </ProtectedRoute>
             } />

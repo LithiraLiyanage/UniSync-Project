@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-const ProtectedRoute = ({ children, allowedRole }) => {
+const ProtectedRoute = ({ children, allowedRole, allowedRoles }) => {
   const { user, loading, token } = useContext(AuthContext);
 
   if (loading) {
@@ -15,12 +15,18 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 
   // Check if token exists or user is fetched
   if (!user && !token) {
-    return <Navigate to={allowedRole === 'admin' ? '/admin/login' : '/login'} replace />;
+    return <Navigate to={allowedRole === 'admin' || (allowedRoles && allowedRoles.includes('admin')) ? '/admin/login' : '/login'} replace />;
   }
 
-  // If user role doesn't match the allowedRole, redirect to main page
-  if (user && user.role !== allowedRole) {
-    return <Navigate to="/" replace />;
+  // If user role doesn't match the allowedRole(s), redirect to main page
+  if (user) {
+    if (allowedRoles) {
+      if (!allowedRoles.includes(user.role)) {
+        return <Navigate to="/" replace />;
+      }
+    } else if (allowedRole && user.role !== allowedRole) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;
