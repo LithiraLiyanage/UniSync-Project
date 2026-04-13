@@ -154,15 +154,23 @@ const ServiceCard = ({ service, user, onOrder, onReport, onMessage, onAdminDelet
         </span>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div>
-          <Stars rating={service.avgRating || 0} size={12} />
-          <span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>
-            {service.avgRating > 0 ? service.avgRating : 'New'} ({service.reviewCount || 0})
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Stars rating={service.avgRating || 0} size={12} />
+            <span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>
+              {service.avgRating > 0 ? service.avgRating : 'New'} ({service.reviewCount || 0})
+            </span>
+          </div>
+          <span style={{ fontSize: 11, color: 'var(--muted)' }}>
+            ⏱ {service.deliveryDays} Day Delivery
+          </span>
+          <span style={{ fontSize: 10, color: 'var(--muted)' }}>
+            📅 {new Date(service.createdAt).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
         <div style={{ fontFamily: "'Sora',sans-serif", fontWeight: 800, fontSize: 17, color: 'var(--p)' }}>
-          ${service.price}
+          Rs.{service.price}/=
         </div>
       </div>
 
@@ -511,7 +519,7 @@ export default function MarketplacePage() {
         <div style={{ marginBottom: 16, padding: '12px 16px', background: 'var(--card2)', borderRadius: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
             <span style={{ fontSize: 13, color: 'var(--muted)' }}>Price</span>
-            <span style={{ fontWeight: 700, color: 'var(--p)', fontSize: 16 }}>${ordering?.price}</span>
+            <span style={{ fontWeight: 700, color: 'var(--p)', fontSize: 16 }}>Rs.{ordering?.price}/=</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ fontSize: 13, color: 'var(--muted)' }}>Delivery</span>
@@ -525,7 +533,7 @@ export default function MarketplacePage() {
           marginBottom: 16, fontSize: 13, color: 'var(--p)', lineHeight: 1.5
         }}>
           <strong>Payment Instructions:</strong><br/>
-          Please transfer exactly <strong>${ordering?.price}</strong> to the following bank account:<br/><br/>
+          Please transfer exactly <strong>Rs.{ordering?.price}/=</strong> to the following bank account:<br/><br/>
           <span>Bank: <strong>Uni Student Bank</strong></span><br/>
           <span>Account Name: <strong>UniSync Escrow</strong></span><br/>
           <span>Account No: <strong>123456789</strong></span><br/><br/>
@@ -547,7 +555,7 @@ export default function MarketplacePage() {
           <Button variant="secondary" fullWidth onClick={() => { setOrdering(null); setRequirements(''); setSlipFile(null); }}>Cancel</Button>
           <Button fullWidth loading={orderLoading}
             onClick={handleOrder}>
-            Confirm — ${ordering?.price}
+            Confirm — Rs.{ordering?.price}/=
           </Button>
         </div>
       </Modal>

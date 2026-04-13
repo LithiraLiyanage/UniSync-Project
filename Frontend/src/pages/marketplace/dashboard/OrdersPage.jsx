@@ -186,7 +186,7 @@ export default function OrdersPage() {
                     )}
                   </td>
                   <td style={{ padding:'14px 16px', fontWeight:700, color:'var(--p)', fontSize:14 }}>
-                    ${o.price}
+                    Rs.{o.price}/=
                   </td>
                   <td style={{ padding:'14px 16px' }}>
                     <div style={{ display:'flex', gap:6 }}>

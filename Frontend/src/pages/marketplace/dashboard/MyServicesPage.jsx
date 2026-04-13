@@ -73,7 +73,7 @@ export default function MyServicesPage() {
     if (!form.title || form.title.length < 5)  e.title = 'Title must be at least 5 characters';
     if (!form.description || form.description.length < 20) e.description = 'Description must be at least 20 characters';
     if (!form.category)     e.category = 'Please select a category';
-    if (!form.price || isNaN(form.price) || Number(form.price) < 1) e.price = 'Price must be at least $1';
+    if (!form.price || isNaN(form.price) || Number(form.price) < 1) e.price = 'Price must be at least Rs.1/=';
     if (!form.deliveryDays || Number(form.deliveryDays) < 1) e.deliveryDays = 'Delivery must be at least 1 day';
     return e;
   };
@@ -190,7 +190,7 @@ export default function MyServicesPage() {
                     </h3>
                   </div>
                   <div style={{ fontFamily:"'Sora',sans-serif", fontWeight:800, fontSize:18, color:'var(--p)', flexShrink:0 }}>
-                    ${svc.price}
+                    Rs.{svc.price}/=
                   </div>
                 </div>
 
@@ -200,10 +200,15 @@ export default function MyServicesPage() {
                 </p>
 
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
-                  <div>
-                    <Stars rating={svc.avgRating} size={12} />
-                    <span style={{ fontSize:11, color:'var(--muted)', marginLeft:4 }}>
-                      {svc.reviewCount} reviews
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Stars rating={svc.avgRating} size={12} />
+                      <span style={{ fontSize:11, color:'var(--muted)', marginLeft:4 }}>
+                        {svc.reviewCount} reviews
+                      </span>
+                    </div>
+                    <span style={{ fontSize:10, color:'var(--muted)' }}>
+                      📅 {new Date(svc.createdAt).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   <span style={{ fontSize:12, color:'var(--muted)' }}>
@@ -245,7 +250,7 @@ export default function MyServicesPage() {
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
           <Select id="category" label="Category" value={form.category} onChange={set('category')}
             options={CATEGORIES} error={errors.category} required />
-          <Input id="price" label="Price ($)" type="number" placeholder="e.g. 50"
+          <Input id="price" label="Price (Rs.)" type="number" placeholder="e.g. 50"
             value={form.price} onChange={set('price')} error={errors.price} required />
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>

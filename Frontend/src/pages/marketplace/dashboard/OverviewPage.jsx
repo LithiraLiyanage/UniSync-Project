@@ -34,7 +34,7 @@ const BarChart = ({ data }) => {
             height: `${Math.round((d.value / max) * 100) + 5}px`,
             minHeight:8, position:'relative', cursor:'default',
           }}
-            title={`$${d.value}`}
+            title={`Rs.${d.value}/=`}
           />
           <span style={{ fontSize:9, color:'var(--muted)' }}>{months[i % 6]}</span>
         </div>
@@ -105,13 +105,13 @@ export default function OverviewPage() {
         <StatCard icon="📦" value={stats?.totalOrders ?? '—'} label="Total Orders"
           change={stats ? `${stats.completedOrders} completed` : undefined}
           color="rgba(91,141,239,1)" />
-        <StatCard icon="💰" value={stats ? `$${stats.totalEarned}` : '$0'}
+        <StatCard icon="💰" value={stats ? `Rs.${stats.totalEarned}/=` : 'Rs.0/='}
           label="Total Earned" color="rgba(34,211,160,1)" />
         <StatCard icon="⭐" value={user?.rating?.toFixed(1) || '—'}
           label="Avg Rating"
           change={user?.totalReviews ? `${user.totalReviews} reviews` : 'No reviews yet'}
           color="rgba(244,185,66,1)" />
-        <StatCard icon="👛" value={`$${user?.walletBalance?.toFixed(2) || '0.00'}`}
+        <StatCard icon="👛" value={`Rs.${user?.walletBalance?.toFixed(2) || '0.00'}/=`}
           label="Wallet Balance" color="rgba(167,139,250,1)" />
       </div>
 
@@ -177,7 +177,7 @@ export default function OverviewPage() {
                       {STATUS_LABEL[o.status]}
                     </span>
                   </td>
-                  <td style={{ padding:'12px 16px', fontSize:13, fontWeight:700, color:'var(--p)' }}>${o.price}</td>
+                  <td style={{ padding:'12px 16px', fontSize:13, fontWeight:700, color:'var(--p)' }}>Rs.{o.price}/=</td>
                 </tr>
               ))}
             </tbody>

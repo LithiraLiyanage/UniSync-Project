@@ -274,7 +274,7 @@ export default function AdminPage() {
                       </div>
                     </td>
                     <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--muted)' }}>{s.category}</td>
-                    <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 700, color: 'var(--p)' }}>${s.price}</td>
+                    <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 700, color: 'var(--p)' }}>Rs.{s.price}/=</td>
                     <td style={{ padding: '12px 16px' }}>
                       <span style={{
                         padding: '3px 10px', borderRadius: 20, fontSize: 11.5, fontWeight: 700,
@@ -330,7 +330,7 @@ export default function AdminPage() {
                     </td>
                     <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--muted)' }}>{u.email}</td>
                     <td style={{ padding: '12px 16px', fontSize: 13, color: 'var(--muted)' }}>{u.university || '—'}</td>
-                    <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 600, color: 'var(--p)' }}>${u.walletBalance?.toFixed(2)}</td>
+                    <td style={{ padding: '12px 16px', fontSize: 13, fontWeight: 600, color: 'var(--p)' }}>Rs.{u.walletBalance?.toFixed(2)}/=</td>
                     <td style={{ padding: '12px 16px' }}>
                       <span style={{
                         padding: '3px 10px', borderRadius: 20, fontSize: 11.5, fontWeight: 700,
