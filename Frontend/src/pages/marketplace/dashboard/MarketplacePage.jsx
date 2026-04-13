@@ -225,6 +225,16 @@ export default function MarketplacePage() {
   const [adminDeleting, setAdminDeleting] = useState(null);
   const [adminDelLoading, setAdminDelLoading] = useState(false);
 
+  // AI Recommender
+  const [aiRecommendation, setAiRecommendation] = useState(null);
+
+  useEffect(() => {
+    // Fetch AI suggestion silently, don't block main UI
+    api.get('/api/services/recommendations')
+      .then(res => setAiRecommendation(res.data))
+      .catch(() => {});
+  }, []);
+
   const fetchServices = useCallback(async () => {
     setLoading(true);
     try {
@@ -233,13 +243,18 @@ export default function MarketplacePage() {
       if (category !== 'All') params.set('category', category);
       const { data } = await api.get(`/api/services?${params}`);
       setServices(data.services || []);
+
+      // Track search query for Recommender
+      if (search && search.trim() && user?.role !== 'admin') {
+        api.post('/api/users/searches', { query: search }).catch(() => {});
+      }
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
       toast.error('Failed to load services: ' + msg);
     } finally {
       setLoading(false);
     }
-  }, [search, category]);
+  }, [search, category, user?.role]);
 
   useEffect(() => {
     const t = setTimeout(fetchServices, 300);
@@ -390,6 +405,49 @@ export default function MarketplacePage() {
           </Button>
         )}
       </div>
+
+
+
+      {/* AI Recommender Banner */}
+      {aiRecommendation && (
+        <div style={{
+          marginBottom: 24, padding: '20px 24px', borderRadius: 20,
+          background: 'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(236,72,153,0.1) 100%)',
+          border: '1px solid rgba(236,72,153,0.2)',
+          display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16,
+          position: 'relative', overflow: 'hidden'
+        }}>
+          {/* Glassmorphism/Glow effect */}
+          <div style={{
+            position: 'absolute', top: -50, left: -50, width: 150, height: 150,
+            background: 'rgba(168,85,247,0.2)', filter: 'blur(40px)', borderRadius: '50%',
+          }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1 }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #a855f7, #ec4899)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+              boxShadow: '0 4px 12px rgba(236,72,153,0.3)', flexShrink: 0
+            }}>
+              ✨
+            </div>
+            <div>
+              <h3 style={{ fontFamily: "'Sora',sans-serif", fontSize: 15, fontWeight: 800, color: '#ec4899', marginBottom: 3, letterSpacing: '0.02em', textTransform: 'uppercase' }}>
+                AI Suggestion
+              </h3>
+              <p style={{ fontSize: 14, color: 'var(--text)', opacity: 0.9 }}>
+                {aiRecommendation.message}
+              </p>
+            </div>
+          </div>
+          <Button style={{ position: 'relative', zIndex: 1, background: '#ec4899', borderColor: '#ec4899', color: '#fff', boxShadow: '0 4px 14px rgba(236,72,153,0.4)', borderRadius: 14, padding: '10px 18px', fontSize: 13, fontWeight: 700 }}
+            onClick={() => {
+              setSearch(aiRecommendation.keyword);
+              setCategory(aiRecommendation.category || 'All');
+            }}>
+            Explore {aiRecommendation.keyword} →
+          </Button>
+        </div>
+      )}
 
       {/* Search + Filters */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>

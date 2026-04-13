@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema(
         ref: 'Module',
       },
     ],
+    recentSearches: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt automatically

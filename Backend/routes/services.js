@@ -86,6 +86,61 @@ router.get('/my', protect, async (req, res) => {
   }
 });
 
+// ── GET /api/services/recommendations  – AI Service Recommender ──────
+router.get('/recommendations', protect, async (req, res) => {
+  try {
+    // Fetch last 5 orders from this user
+    const orders = await Order.find({ buyer: req.user._id }).populate('service', 'title category tags').sort('-createdAt').limit(5);
+    
+    // Simulate an AI Recommendation Engine
+    // Keyword mappings
+    const mapping = {
+      'Math': { keyword: 'Calculus', category: 'Tutoring', msg: 'Calculus Tutoring' },
+      'Code': { keyword: 'React', category: 'Programming', msg: 'Advanced Web Development' },
+      'React': { keyword: 'Node', category: 'Programming', msg: 'Backend Development' },
+      'Design': { keyword: 'UI/UX', category: 'Design', msg: 'UI/UX Design Review' },
+      'Writing': { keyword: 'Essay', category: 'Writing', msg: 'Essay Proofreading' },
+      'Java': { keyword: 'Java', category: 'Programming', msg: 'Java Programming Services' },
+    };
+
+    let suggestion = null;
+
+    if (orders.length > 0 || (req.user && req.user.recentSearches && req.user.recentSearches.length > 0)) {
+      // Analyze user's past order categories and titles + recent searches
+      let historyText = orders.map(o => o.service ? `${o.service.title} ${o.service.category} ${(o.service.tags || []).join(' ')}` : '').join(' ');
+      
+      if (req.user && req.user.recentSearches) {
+        historyText += ' ' + req.user.recentSearches.join(' ');
+      }
+      
+      for (const [key, result] of Object.entries(mapping)) {
+        if (new RegExp(key, 'i').test(historyText)) {
+          suggestion = {
+            message: `Based on your recent interest in ${key}, you might need ${result.msg}.`,
+            keyword: result.keyword,
+            category: result.category
+          };
+          break;
+        }
+      }
+    }
+
+    if (!suggestion) {
+      // Fallback AI recommendation
+      suggestion = {
+        message: 'Boost your academic performance this semester with specialized Tutoring!',
+        keyword: 'Tutoring',
+        category: 'Tutoring'
+      };
+    }
+
+    res.json(suggestion);
+  } catch (err) {
+    console.error('[AI Recommender Error]', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // ── GET /api/services/:id  – Single service detail ───────────────────
 router.get('/:id', async (req, res) => {
   try {
