@@ -107,9 +107,9 @@ export default function OverviewPage() {
           color="rgba(91,141,239,1)" />
         <StatCard icon="💰" value={stats ? `Rs.${stats.totalEarned}/=` : 'Rs.0/='}
           label="Total Earned" color="rgba(34,211,160,1)" />
-        <StatCard icon="⭐" value={user?.rating?.toFixed(1) || '—'}
+        <StatCard icon="⭐" value={user?.avgRating?.toFixed(1) || '—'}
           label="Avg Rating"
-          change={user?.totalReviews ? `${user.totalReviews} reviews` : 'No reviews yet'}
+          change={user?.reviewCount ? `${user.reviewCount} reviews` : 'No reviews yet'}
           color="rgba(244,185,66,1)" />
         <StatCard icon="👛" value={`Rs.${user?.walletBalance?.toFixed(2) || '0.00'}/=`}
           label="Wallet Balance" color="rgba(167,139,250,1)" />

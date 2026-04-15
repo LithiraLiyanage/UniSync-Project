@@ -1,6 +1,33 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const reviewSchema = new mongoose.Schema(
+  {
+    buyer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    service: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service',
+      required: false,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    comment: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+    },
+  },
+  { timestamps: true }
+);
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -60,6 +87,7 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    reviews: [reviewSchema],
   },
   {
     timestamps: true, // Adds createdAt and updatedAt automatically
@@ -74,6 +102,16 @@ userSchema.virtual('initials').get(function () {
   const parts = this.name.trim().split(' ');
   if (parts.length === 1) return parts[0][0].toUpperCase();
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+});
+
+userSchema.virtual('avgRating').get(function () {
+  if (!this.reviews || this.reviews.length === 0) return 0;
+  const sum = this.reviews.reduce((acc, r) => acc + r.rating, 0);
+  return Math.round((sum / this.reviews.length) * 10) / 10;
+});
+
+userSchema.virtual('reviewCount').get(function () {
+  return this.reviews ? this.reviews.length : 0;
 });
 
 // ─── Pre-save Hook: Hash password before saving ─────────────────────────────

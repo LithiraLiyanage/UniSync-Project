@@ -78,7 +78,7 @@ const DotMenu = ({ service, user, onReport, onMessage, onAdminDelete, onRate }) 
                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                 </svg>
-                Rate Service
+                Rate Seller
               </button>
             )}
 
@@ -327,9 +327,11 @@ export default function MarketplacePage() {
       setRatingService(null);
       setRatingScore(5);
       setRatingComment('');
-      // update local services list with new avg
+      // update local services list with new avg for all services by this seller
       setServices(prev => prev.map(s => {
-        if (s._id === ratingService._id) {
+        const sellerId = s.seller?._id || s.seller?.id;
+        const targetSellerId = ratingService?.seller?._id || ratingService?.seller?.id;
+        if (sellerId === targetSellerId) {
           return { ...s, avgRating: data.avgRating, reviewCount: data.reviewCount || s.reviewCount + 1 };
         }
         return s;
@@ -591,9 +593,9 @@ export default function MarketplacePage() {
 
       {/* ── RATE MODAL ─────────────────────────────────────────────── */}
       <Modal open={!!ratingService} onClose={() => { setRatingService(null); setRatingScore(5); setRatingComment(''); }}
-        title="Rate Service" width={440}>
+        title="Rate Seller" width={440}>
         <p style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 16 }}>
-          Rate <strong style={{ color: 'var(--text)' }}>{ratingService?.title}</strong> by {ratingService?.seller?.name}.
+          Rate <strong style={{ color: 'var(--text)' }}>{ratingService?.seller?.name}</strong> based on your experience.
         </p>
         <div style={{ marginBottom: 16 }}>
           <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>Rating (1-5 Stars)</label>

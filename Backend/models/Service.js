@@ -1,27 +1,5 @@
 const mongoose = require('mongoose');
 
-const reviewSchema = new mongoose.Schema(
-  {
-    buyer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 5,
-    },
-    comment: {
-      type: String,
-      trim: true,
-      maxlength: 1000,
-    },
-  },
-  { timestamps: true }
-);
-
 const serviceSchema = new mongoose.Schema(
   {
     title: {
@@ -76,7 +54,6 @@ const serviceSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    reviews: [reviewSchema],
     totalOrders: {
       type: Number,
       default: 0,
@@ -90,18 +67,11 @@ const serviceSchema = new mongoose.Schema(
 );
 
 // ── Virtuals ─────────────────────────────────────────────────────────
-serviceSchema.virtual('avgRating').get(function () {
-  if (!this.reviews || this.reviews.length === 0) return 0;
-  const sum = this.reviews.reduce((acc, r) => acc + r.rating, 0);
-  return Math.round((sum / this.reviews.length) * 10) / 10;
-});
-
-serviceSchema.virtual('reviewCount').get(function () {
-  return this.reviews ? this.reviews.length : 0;
-});
+// (Reviews moved to User model)
 
 // ── Indexes ───────────────────────────────────────────────────────────
 serviceSchema.index({ category: 1 });
 serviceSchema.index({ isActive: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Service', serviceSchema);
+

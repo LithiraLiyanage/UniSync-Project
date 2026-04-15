@@ -39,18 +39,21 @@ router.get('/', async (req, res) => {
       try {
         const seller = await User
           .findById(svc.seller)
-          .select('name initials university bio createdAt')
-          .lean();
+          .select('name initials university bio createdAt reviews')
+          .lean({ virtuals: true });
 
         if (!seller) continue;
 
         let avgRating = 0;
         let reviewCount = 0;
-        if (svc.reviews && svc.reviews.length > 0) {
-          reviewCount = svc.reviews.length;
-          const sum = svc.reviews.reduce((acc, r) => acc + r.rating, 0);
+        if (seller.reviews && seller.reviews.length > 0) {
+          reviewCount = seller.reviews.length;
+          const sum = seller.reviews.reduce((acc, r) => acc + r.rating, 0);
           avgRating = Math.round((sum / reviewCount) * 10) / 10;
         }
+
+        // We remove reviews from seller payload to minimize data size
+        delete seller.reviews;
 
         result.push({ ...svc, seller, avgRating, reviewCount });
       } catch (innerErr) {
@@ -171,11 +174,25 @@ router.get('/recommendations', protect, async (req, res) => {
 // ── GET /api/services/:id  – Single service detail ───────────────────
 router.get('/:id', async (req, res) => {
   try {
-    const service = await Service.findById(req.params.id)
-      .populate('seller', 'name initials university bio rating totalReviews createdAt')
-      .populate('reviews.buyer', 'name initials');
-
+    const service = await Service.findById(req.params.id).lean();
     if (!service) return res.status(404).json({ message: 'Service not found' });
+
+    const seller = await User.findById(service.seller).populate('reviews.buyer', 'name initials');
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+    service.seller = {
+      _id: seller._id,
+      name: seller.name,
+      initials: seller.initials,
+      university: seller.university,
+      bio: seller.bio,
+      createdAt: seller.createdAt,
+      avgRating: seller.avgRating,
+      reviewCount: seller.reviewCount
+    };
+    // Include reviews from seller
+    service.reviews = seller.reviews;
+
     res.json(service);
   } catch (err) {
     res.status(500).json({ message: 'Service not found' });
@@ -281,7 +298,7 @@ router.delete('/:id', protect, async (req, res) => {
   }
 });
 
-// ── POST /api/services/:id/reviews  – Add a review ───────────────────
+// ── POST /api/services/:id/reviews  – Add a review (Rates the Seller) ─────────
 router.post(
   '/:id/reviews', protect,
   [
@@ -297,16 +314,21 @@ router.post(
       const service = await Service.findById(req.params.id);
       if (!service) return res.status(404).json({ message: 'Service not found' });
 
-      const alreadyIndex = service.reviews.findIndex((r) => r.buyer.toString() === req.user._id.toString());
+      const seller = await User.findById(service.seller);
+      if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+      const alreadyIndex = seller.reviews.findIndex(
+        (r) => r.buyer.toString() === req.user._id.toString() && r.service && r.service.toString() === service._id.toString()
+      );
       if (alreadyIndex !== -1) {
-        service.reviews[alreadyIndex].rating = req.body.rating;
-        service.reviews[alreadyIndex].comment = req.body.comment;
+        seller.reviews[alreadyIndex].rating = req.body.rating;
+        seller.reviews[alreadyIndex].comment = req.body.comment;
       } else {
-        service.reviews.push({ buyer: req.user._id, rating: req.body.rating, comment: req.body.comment });
+        seller.reviews.push({ buyer: req.user._id, service: service._id, rating: req.body.rating, comment: req.body.comment });
       }
       
-      await service.save();
-      res.status(201).json({ message: 'Review added', avgRating: service.avgRating, reviewCount: service.reviewCount });
+      await seller.save();
+      res.status(201).json({ message: 'Seller rated successfully', avgRating: seller.avgRating, reviewCount: seller.reviewCount });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Server error' });
@@ -320,14 +342,17 @@ router.delete('/:id/reviews/:reviewId', protect, async (req, res) => {
     const service = await Service.findById(req.params.id);
     if (!service) return res.status(404).json({ message: 'Service not found' });
 
-    const review = service.reviews.id(req.params.reviewId);
+    const seller = await User.findById(service.seller);
+    if (!seller) return res.status(404).json({ message: 'Seller not found' });
+
+    const review = seller.reviews.id(req.params.reviewId);
     if (!review) return res.status(404).json({ message: 'Review not found' });
 
     if (review.buyer.toString() !== req.user._id.toString())
       return res.status(403).json({ message: 'Not authorized' });
 
-    service.reviews.pull(req.params.reviewId);
-    await service.save();
+    seller.reviews.pull(req.params.reviewId);
+    await seller.save();
     res.json({ message: 'Review removed' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
