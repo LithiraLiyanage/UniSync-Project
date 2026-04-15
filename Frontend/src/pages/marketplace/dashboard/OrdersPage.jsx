@@ -72,7 +72,6 @@ export default function OrdersPage() {
       pending:   [{ label:'Cancel Order', action:'cancel', variant:'danger' }],
       delivered: [
         { label:'Accept & Complete', action:'completed', variant:'primary' },
-        { label:'Request Revision', action:'in_progress', variant:'secondary' },
       ],
     },
     seller: {

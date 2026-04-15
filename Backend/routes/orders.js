@@ -151,7 +151,7 @@ router.put('/:id/status', protect, async (req, res) => {
       in_progress: ['delivered', 'cancelled'],
     },
     buyer: {
-      delivered: ['completed', 'in_progress'], // in_progress = request revision
+      delivered: ['completed'], 
       pending: ['cancelled'],
     },
   };
