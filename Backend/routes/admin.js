@@ -97,8 +97,8 @@ router.delete('/services/:id', async (req, res) => {
 // ── GET /api/admin/users ─────────────────────────────────────────────
 router.get('/users', async (req, res) => {
   try {
-    const users = await User.find({ role: 'student' })
-      .select('name email university walletBalance isActive createdAt')
+    const users = await User.find({ role: 'admin' })
+      .select('name email isActive createdAt')
       .sort('-createdAt');
     res.json(users);
   } catch (err) {
