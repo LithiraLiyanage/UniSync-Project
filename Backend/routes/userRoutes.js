@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getUserProfile, updateUserProfile, updatePassword } = require('../controllers/userController');
+const { getUserProfile, updateUserProfile, updatePassword, getUserStats } = require('../controllers/userController');
 const { protect } = require('../middleware/authMiddleware');
 
 // All user routes are protected — require valid JWT
@@ -11,6 +11,9 @@ router.get('/profile', getUserProfile);
 
 // PUT  /api/users/profile — Update user details (name, university, bio, etc.)
 router.put('/profile', updateUserProfile);
+
+// GET /api/users/:id/stats — Fetch user seller stats
+router.get('/:id/stats', getUserStats);
 
 // PUT  /api/users/password — Update user password
 router.put('/password', updatePassword);

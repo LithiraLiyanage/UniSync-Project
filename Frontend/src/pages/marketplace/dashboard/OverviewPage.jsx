@@ -111,8 +111,12 @@ export default function OverviewPage() {
           label="Avg Rating"
           change={user?.reviewCount ? `${user.reviewCount} reviews` : 'No reviews yet'}
           color="rgba(244,185,66,1)" />
-        <StatCard icon="👛" value={`Rs.${user?.walletBalance?.toFixed(2) || '0.00'}/=`}
-          label="Wallet Balance" color="rgba(167,139,250,1)" />
+        <StatCard 
+          icon="🏅" 
+          value={(stats?.totalOrders || 0) < 50 ? 'Silver Seller' : 'Gold Seller'}
+          label="Achievement Badge" 
+          color={(stats?.totalOrders || 0) < 50 ? 'rgba(192,192,192,1)' : 'rgba(255,215,0,1)'} 
+        />
       </div>
 
       {/* Charts + Recent orders */}

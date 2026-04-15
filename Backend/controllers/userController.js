@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
+const mongoose = require('mongoose');
 
 /**
  * Helper: Extract numeric value from strings like "Year 3" or "Semester 1"
@@ -117,4 +119,41 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
-module.exports = { getUserProfile, updateUserProfile, updatePassword };
+// ─── @desc    Get user stats (seller stats)
+// ─── @route   GET /api/users/:id/stats
+// ─── @access  Private
+const getUserStats = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    if (req.user._id.toString() !== userId && req.user.role !== 'admin') {
+      res.status(403);
+      throw new Error('Not authorized');
+    }
+
+    const statsAgg = await Order.aggregate([
+      { 
+        $match: { 
+          seller: new mongoose.Types.ObjectId(userId), 
+          status: { $ne: 'cancelled' } 
+        } 
+      },
+      { 
+        $group: {
+          _id: null,
+          totalEarned: { $sum: "$price" },
+          totalOrders: { $sum: 1 },
+          completedOrders: {
+            $sum: { $cond: [ { $eq: ["$status", "completed"] }, 1, 0 ] }
+          }
+        }
+      }
+    ]);
+
+    const stats = statsAgg.length > 0 ? statsAgg[0] : { totalEarned: 0, totalOrders: 0, completedOrders: 0 };
+    res.status(200).json(stats);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getUserProfile, updateUserProfile, updatePassword, getUserStats };
