@@ -52,24 +52,29 @@ const AdminStudyBuddy = () => {
     title: '', subject: '', year: new Date().getFullYear(), examType: 'University', description: ''
   });
   const [paperFile, setPaperFile] = useState(null);
+  const [paperErrors, setPaperErrors] = useState({});
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
     fetchPapers();
-    // Simulate initial data loading for skeleton UI
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    return () => clearTimeout(timer);
   }, []);
 
   const fetchPapers = async () => {
+    setIsLoading(true);
     try {
       const { data } = await api.get('/api/pastpapers');
-      if (data.success) {
-        setPapers(data.data);
+      if (data && data.success) {
+        setPapers(data.data || []);
+      } else {
+        setPapers(data || []);
       }
-    } catch (error) {
-      toast.error('Failed to load past papers');
+    } catch (err) {
+      console.error("API ERROR:", err);
+      setPapers([]);
+      toast.error("Failed to load past papers.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,60 +94,118 @@ const AdminStudyBuddy = () => {
       try {
         const { data } = await api.delete(`/api/pastpapers/${showConfirmModal.id}`);
         if(data.success) {
-          setPapers(papers.filter(p => p._id !== showConfirmModal.id));
+          setPapers(papers.filter(p => p._id !== showConfirmModal.id && p.id !== showConfirmModal.id));
           toast.success('Paper removed successfully');
+        } else {
+          throw new Error("Failed to delete");
         }
       } catch (error) {
+        console.error("API ERROR:", error);
         toast.error('Failed to remove paper');
       }
     }
     setShowConfirmModal({ isOpen: false, type: '', id: null });
   };
 
+  const validatePaperForm = () => {
+    const errors = {};
+    const titleRegex = /^[a-zA-Z0-9\-&: ]+$/;
+    
+    if (!paperFormData.title.trim()) errors.title = 'Document title is required.';
+    else if (paperFormData.title.trim().length < 5 || paperFormData.title.trim().length > 100) 
+      errors.title = 'Title must be between 5 and 100 characters.';
+    else if (!titleRegex.test(paperFormData.title.trim()))
+      errors.title = 'No special characters except (-, &, :).';
+      
+    if (!paperFormData.subject) errors.subject = 'Subject selection is required.';
+    
+    const yearNum = parseInt(paperFormData.year, 10);
+    const currYear = new Date().getFullYear();
+    if (!paperFormData.year) errors.year = 'Year is required.';
+    else if (isNaN(yearNum) || yearNum < 2000 || yearNum > currYear)
+      errors.year = `Year must be between 2000 and ${currYear}.`;
+      
+    if (!paperFormData.examType) errors.examType = 'Exam type is required.';
+    
+    if (!paperFile) errors.file = 'A file attachment is required.';
+    else {
+      const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowed.includes(paperFile.type)) errors.file = 'Only PDF, DOC, or DOCX formats are allowed.';
+      else if (paperFile.size < 10240) errors.file = 'File size is too small (Minimum 10KB).';
+      else if (paperFile.size > 10 * 1024 * 1024) errors.file = 'File exceeds the 10MB maximum limit.';
+      else if (paperFile.name.length > 100 || !/^[a-zA-Z0-9\-_.]+$/.test(paperFile.name)) errors.file = 'Invalid file name. Max 100 chars, no special chars.';
+    }
+    
+    return errors;
+  };
+
   const handleUploadPaper = async (e) => {
     e.preventDefault();
-    if (!paperFile) {
-      toast.error('Please select a file');
+    const errors = validatePaperForm();
+    if (Object.keys(errors).length > 0) {
+      setPaperErrors(errors);
+      toast.error('Please fix the validation errors before submitting.');
       return;
     }
-
-    const allowedTypes = [
-      'application/pdf', 
-      'application/msword', 
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-      'image/jpeg', 
-      'image/png'
-    ];
-    if (!allowedTypes.includes(paperFile.type)) {
-      toast.error('Invalid file type. Allowed: PDF, DOC, DOCX, JPG, PNG');
-      return;
-    }
-    if (paperFile.size > 10 * 1024 * 1024) {
-      toast.error('File exceeds 10MB limit');
-      return;
-    }
+    setPaperErrors({});
 
     const uploadData = new FormData();
-    uploadData.append('title', paperFormData.title);
+    uploadData.append('title', paperFormData.title.trim());
     uploadData.append('subject', paperFormData.subject);
-    uploadData.append('year', paperFormData.year);
+    uploadData.append('year', parseInt(paperFormData.year, 10));
     uploadData.append('examType', paperFormData.examType);
-    uploadData.append('description', paperFormData.description);
+    uploadData.append('description', paperFormData.description ? paperFormData.description.trim() : '');
     uploadData.append('file', paperFile);
+
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => (prev >= 90 ? 90 : prev + 15));
+    }, 100);
 
     try {
       const { data } = await api.post('/api/pastpapers', uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
       if (data.success) {
-        toast.success('Past paper uploaded successfully');
-        setShowUploadModal(false);
-        setPaperFile(null);
-        setPaperFormData({ title: '', subject: '', year: new Date().getFullYear(), examType: 'University', description: '' });
-        fetchPapers();
+        setTimeout(() => {
+          toast.success('Past paper uploaded successfully');
+          setShowUploadModal(false);
+          setPaperFile(null);
+          setPaperFormData({ title: '', subject: '', year: new Date().getFullYear(), examType: 'University', description: '' });
+          setIsUploading(false);
+          setUploadProgress(0);
+          fetchPapers();
+        }, 500);
+      } else {
+        throw new Error(data.error || "Upload failed");
       }
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to upload paper');
+      clearInterval(progressInterval);
+      setIsUploading(false);
+      setUploadProgress(0);
+      console.error("API ERROR:", error);
+      toast.error(error.response?.data?.error || 'Failed to upload past paper.');
+    }
+  };
+
+  const handleUpdateStatus = async (id, newStatus) => {
+    // Instant Optimistic UI Update
+    const previousPapers = [...papers];
+    setPapers(papers.map(p => (p._id === id || p.id === id) ? { ...p, status: newStatus } : p));
+    toast.success(`Paper marked as ${newStatus}`);
+
+    try {
+      const { data } = await api.put(`/api/pastpapers/${id}`, { status: newStatus });
+      if(!data.success) throw new Error("Failed to update status");
+    } catch (error) {
+      setPapers(previousPapers); // Revert on failure
+      console.error("API ERROR:", error);
+      toast.error('Failed to update status');
     }
   };
 
@@ -518,26 +581,39 @@ const AdminStudyBuddy = () => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 font-mono text-sm text-slate-500">{p.uploadedBy?.name || p.uploadedBy || 'Admin'}</td>
+                        <td className="px-6 py-4 font-mono text-sm text-slate-500">{p.mockUploader || p.uploadedBy?.name || p.uploadedBy || 'Admin'}</td>
                         <td className="px-6 py-4 font-medium text-slate-500">{p.createdAt ? new Date(p.createdAt).toLocaleDateString() : p.date}</td>
                         <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                            (p.status || 'Approved') === 'Pending' 
-                            ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:border-orange-800 border-orange-200' 
-                            : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:border-green-800 border-green-200'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold border ${p.status === 'Pending' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:border-orange-800 border-orange-200' : p.status === 'Rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:border-red-800 border-red-200' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:border-green-800 border-green-200'}`}>
                             {p.status || 'Approved'}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex justify-end gap-2">
-                            {p.fileUrl && (
-                               <a href={`http://localhost:5000${p.fileUrl}`} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-400 hover:text-blue-600 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Download">
-                                 <FiDownload size={18} />
-                               </a>
+                          <div className="flex justify-end items-center gap-2">
+                            {p.status === 'Pending' && (
+                              <>
+                                <button onClick={() => handleUpdateStatus(p._id || p.id, 'Approved')} className="p-2 text-green-600 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 rounded-lg transition-colors border border-green-200 dark:border-green-800" title="Approve">
+                                  <FiCheck size={16} />
+                                </button>
+                                <button onClick={() => handleUpdateStatus(p._id || p.id, 'Rejected')} className="p-2 text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors border border-red-200 dark:border-red-800" title="Reject">
+                                  <FiX size={16} />
+                                </button>
+                              </>
                             )}
-                            <button className="p-2 text-slate-400 hover:text-blue-600 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Edit"><FiEdit size={18} /></button>
-                            <button onClick={() => confirmRejectPaper(p._id || p.id)} className="p-2 text-slate-400 hover:text-red-600 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Delete"><FiTrash2 size={18} /></button>
+
+                            {p.status === 'Rejected' ? (
+                              <button disabled className="px-3 py-1.5 flex items-center gap-1.5 text-sm font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 rounded-lg transition-colors cursor-not-allowed opacity-60 border border-slate-200 dark:border-slate-700" title="Review (Disabled)">
+                                <FiBookOpen size={14} /> Review
+                              </button>
+                            ) : (
+                              <a href={p.fileUrl ? `http://localhost:5000${p.fileUrl}` : '#'} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 flex items-center gap-1.5 text-sm font-bold text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:border-blue-800 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Review">
+                                <FiBookOpen size={14} /> Review
+                              </a>
+                            )}
+                            
+                            <button onClick={() => confirmRejectPaper(p._id || p.id)} className="p-2 text-slate-400 hover:text-red-600 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Delete">
+                              <FiTrash2 size={18} />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -562,6 +638,137 @@ const AdminStudyBuddy = () => {
 
         {/* --- Modals --- */}
         <AnimatePresence>
+          {showUploadModal && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="bg-white dark:bg-slate-800 w-full max-w-xl rounded-2xl shadow-2xl relative border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">
+                <div className="bg-slate-50 dark:bg-slate-800/80 p-6 border-b border-slate-100 dark:border-slate-700 shrink-0">
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                    <FiFileText className="text-blue-600" /> Upload Past Paper
+                  </h2>
+                  <p className="text-sm text-slate-500 mt-1">Upload exactly formatted files adhering to bounds.</p>
+                </div>
+                
+                <div className="p-6 space-y-5 overflow-y-auto flex-1">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Document Title <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. CS201 - Mid Term 2024" 
+                      value={paperFormData.title}
+                      onChange={(e) => {
+                         setPaperFormData({...paperFormData, title: e.target.value});
+                         if(paperErrors.title) setPaperErrors({...paperErrors, title: null});
+                      }}
+                      className={`w-full px-4 py-3 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-xl border outline-none transition-shadow ${paperErrors.title ? 'border-red-400 focus:ring-red-100 dark:focus:ring-red-900/30 ring-2 ring-red-100 dark:ring-red-900/10' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30'}`}
+                    />
+                    {paperErrors.title && <p className="text-red-500 text-xs font-bold mt-1.5 flex items-center gap-1"><FiAlertCircle /> {paperErrors.title}</p>}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Subject <span className="text-red-500">*</span></label>
+                      <select 
+                        value={paperFormData.subject}
+                        onChange={(e) => {
+                          setPaperFormData({...paperFormData, subject: e.target.value});
+                          if(paperErrors.subject) setPaperErrors({...paperErrors, subject: null});
+                        }}
+                        className={`w-full px-4 py-3 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-xl border outline-none transition-shadow ${paperErrors.subject ? 'border-red-400 focus:ring-red-100 dark:focus:ring-red-900/30' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30'}`}
+                      >
+                        <option value="" disabled>Select Subject</option>
+                        {modules.map(m => (
+                          <option key={m.id} value={m.name}>{m.code} - {m.name}</option>
+                        ))}
+                      </select>
+                      {paperErrors.subject && <p className="text-red-500 text-xs font-bold mt-1.5 flex items-center gap-1"><FiAlertCircle /> {paperErrors.subject}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Year <span className="text-red-500">*</span></label>
+                      <input 
+                        type="number" 
+                        min="2000"
+                        max={new Date().getFullYear()}
+                        value={paperFormData.year}
+                        onChange={(e) => {
+                          setPaperFormData({...paperFormData, year: e.target.value});
+                          if(paperErrors.year) setPaperErrors({...paperErrors, year: null});
+                        }}
+                        className={`w-full px-4 py-3 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-xl border outline-none transition-shadow ${paperErrors.year ? 'border-red-400 focus:ring-red-100 dark:focus:ring-red-900/30' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30'}`}
+                      />
+                      {paperErrors.year && <p className="text-red-500 text-xs font-bold mt-1.5 flex items-center gap-1"><FiAlertCircle /> {paperErrors.year}</p>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Exam Type <span className="text-red-500">*</span></label>
+                    <select 
+                      value={paperFormData.examType}
+                      onChange={(e) => {
+                        setPaperFormData({...paperFormData, examType: e.target.value});
+                        if(paperErrors.examType) setPaperErrors({...paperErrors, examType: null});
+                      }}
+                      className={`w-full px-4 py-3 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-xl border outline-none transition-shadow ${paperErrors.examType ? 'border-red-400 focus:ring-red-100 dark:focus:ring-red-900/30' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30'}`}
+                    >
+                      <option value="University">University</option>
+                      <option value="A/L">A/L</option>
+                      <option value="O/L">O/L</option>
+                    </select>
+                    {paperErrors.examType && <p className="text-red-500 text-xs font-bold mt-1.5 flex items-center gap-1"><FiAlertCircle /> {paperErrors.examType}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Upload File <span className="text-red-500">*</span></label>
+                    <div className={`border-2 border-dashed rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${paperErrors.file ? 'border-red-400 bg-red-50/50 dark:bg-red-900/10' : 'border-slate-300 dark:border-slate-600'}`}>
+                      <input 
+                        type="file"
+                        id="paperUpload"
+                        className="hidden"
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => {
+                          if(e.target.files && e.target.files.length > 0) {
+                             setPaperFile(e.target.files[0]);
+                             if(paperErrors.file) setPaperErrors({...paperErrors, file: null});
+                          }
+                        }}
+                      />
+                      <label htmlFor="paperUpload" className="cursor-pointer flex flex-col items-center">
+                        <FiLayers size={32} className="text-slate-400 mb-3" />
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                          {paperFile ? paperFile.name : 'Click to select PDF or DOC file'}
+                        </span>
+                        <span className="text-xs text-slate-500 mt-1">Limits: 10KB to 10MB</span>
+                      </label>
+                    </div>
+                    {paperErrors.file && <p className="text-red-500 text-xs font-bold mt-1.5 flex items-center gap-1"><FiAlertCircle /> {paperErrors.file}</p>}
+                  </div>
+
+                  {isUploading && (
+                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-4 overflow-hidden">
+                      <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${uploadProgress}%` }}></div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-3 shrink-0">
+                  <button 
+                    disabled={isUploading}
+                    onClick={() => { setShowUploadModal(false); setPaperErrors({}); setPaperFile(null); }} 
+                    className="px-5 py-2.5 text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors disabled:opacity-50"
+                  >
+                     Cancel
+                  </button>
+                  <button 
+                    onClick={handleUploadPaper} 
+                    disabled={Object.keys(paperErrors).length > 0 || isUploading || !paperFormData.title || !paperFormData.subject || !paperFormData.year || !paperFile}
+                    className="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isUploading ? 'Uploading...' : <><FiCheck /> Upload Paper</>}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
           {showAddModal && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl relative border border-slate-200 dark:border-slate-700 overflow-hidden">

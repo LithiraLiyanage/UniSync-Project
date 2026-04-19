@@ -1,8 +1,9 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiBookOpen, FiDownload, FiPlus, FiMessageSquare, FiTrendingUp } from 'react-icons/fi';
 import { Line, Pie } from 'react-chartjs-2';
+import api from '../api/axios';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement
 } from 'chart.js';
@@ -32,6 +33,34 @@ const StudentStudyBuddy = () => {
   const [activeTab, setActiveTab] = useState('modules');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+
+  const [papers, setPapers] = useState([]);
+  const [isLoadingPapers, setIsLoadingPapers] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetchPapers();
+  }, []);
+
+  const fetchPapers = async () => {
+    setIsLoadingPapers(true);
+    try {
+      const { data } = await api.get('/api/pastpapers');
+      if (data && data.success) {
+        const payloadData = data.data || [];
+        setPapers(payloadData.filter(p => p.status === 'Approved' || !p.status));
+      } else {
+         const directPayload = Array.isArray(data) ? data : [];
+         setPapers(directPayload.filter(p => p.status === 'Approved' || !p.status));
+      }
+      setError(false);
+      setIsLoadingPapers(false);
+    } catch (err) {
+      console.error("API ERROR:", err);
+      setError(true);
+      setIsLoadingPapers(false);
+    }
+  };
 
   // Mocks for Chatbot
   const [messages, setMessages] = useState([{ sender: 'ai', text: 'Hello! I am your AI Study Assistant. What would you like to learn today?' }]);
@@ -126,18 +155,34 @@ const StudentStudyBuddy = () => {
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {defaultPapers.map((p, i) => (
-                <div key={i} className="bg-card border border-border p-5 rounded-2xl shadow-sm hover:shadow-md transition-all group">
-                  <div className="flex gap-2 mb-3">
-                    <span className={`text-xs font-bold px-2 py-1 rounded text-white bg-${p.color}`}>{p.year}</span>
-                    <span className="text-xs font-bold px-2 py-1 rounded text-red bg-red/10">Sem {p.sem}</span>
+              {isLoadingPapers ? (
+                <div className="col-span-full text-center text-muted py-8">Loading past papers...</div>
+              ) : error ? (
+                <div className="col-span-full text-center text-red-500 font-bold py-8">Failed to load past papers.</div>
+              ) : papers.length === 0 ? (
+                <div className="col-span-full text-center text-muted py-8">No Past Papers</div>
+              ) : (
+                papers.map((p) => (
+                  <div key={p.id || p._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm hover:shadow-md transition-all group flex flex-col justify-between">
+                    <div>
+                      <div className="flex gap-2 mb-3">
+                        <span className={`text-xs font-bold px-2 py-1 rounded text-white bg-blue-500`}>{p.year}</span>
+                        <span className="text-xs font-bold px-2 py-1 rounded text-red-500 bg-red-100 dark:bg-red-900/30">{p.subject || 'Module'}</span>
+                      </div>
+                      <h3 className="text-lg font-bold text-text mb-4 mt-2">{p.title}</h3>
+                    </div>
+                    {p.fileUrl ? (
+                      <a href={`http://localhost:5000${p.fileUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-primary font-bold hover:text-primary-dark transition-colors mt-auto">
+                        <FiDownload className="mr-2" /> Download Paper
+                      </a>
+                    ) : (
+                      <button disabled className="flex items-center text-muted font-bold transition-colors cursor-not-allowed mt-auto">
+                        <FiDownload className="mr-2" /> File Unavailable
+                      </button>
+                    )}
                   </div>
-                  <h3 className="text-lg font-bold text-text mb-4 mt-2">{p.module}</h3>
-                  <button className="flex items-center text-primary font-bold hover:text-primary-dark transition-colors">
-                    <FiDownload className="mr-2" /> Download Paper
-                  </button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </motion.div>
         )}

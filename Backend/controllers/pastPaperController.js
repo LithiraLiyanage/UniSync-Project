@@ -14,9 +14,48 @@ const getPastPapers = async (req, res, next) => {
     if (year) query.year = year;
     if (examType) query.examType = examType;
 
-    const papers = await PastPaper.find(query)
+    let papers = await PastPaper.find(query)
       .populate('uploadedBy', 'name email')
       .sort({ createdAt: -1 });
+
+    if (papers.length === 0 && Object.keys(query).length === 0) {
+      const seedData = [
+        {
+          title: 'CS201 - Mid Term 2024.pdf',
+          subject: 'CS201',
+          year: 2024,
+          examType: 'University',
+          fileUrl: '/uploads/sample1.pdf',
+          mockUploader: 'S10294',
+          status: 'Pending',
+          createdAt: new Date('2024-10-10T10:00:00Z')
+        },
+        {
+          title: 'CS202 - Final 2023.pdf',
+          subject: 'CS202',
+          year: 2023,
+          examType: 'University',
+          fileUrl: '/uploads/sample2.pdf',
+          mockUploader: 'S18392',
+          status: 'Approved',
+          createdAt: new Date('2024-10-08T10:00:00Z')
+        },
+        {
+          title: 'IT305 - Semester End 2022.pdf',
+          subject: 'IT305',
+          year: 2022,
+          examType: 'University',
+          fileUrl: '/uploads/sample3.pdf',
+          mockUploader: 'S11023',
+          status: 'Rejected',
+          createdAt: new Date('2024-10-05T10:00:00Z')
+        }
+      ];
+      await PastPaper.insertMany(seedData);
+      papers = await PastPaper.find(query)
+        .populate('uploadedBy', 'name email')
+        .sort({ createdAt: -1 });
+    }
 
     res.status(200).json({ success: true, count: papers.length, data: papers });
   } catch (error) {
@@ -44,27 +83,91 @@ const getPastPaper = async (req, res, next) => {
 // @access  Private/Admin
 const uploadPastPaper = async (req, res, next) => {
   try {
-    const { title, subject, year, examType, description } = req.body;
+    let { title, subject, year, examType, description } = req.body;
     
+    // 1. Check Required Fields
+    if (!title || !subject || !year || !examType) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'All fields are required' });
+    }
+
+    // 2. Sanitize & Trim
+    title = title.trim();
+    subject = subject.trim();
+    description = description ? description.trim() : '';
+
+    // 3. Document Title Validation
+    const titleRegex = /^[a-zA-Z0-9\-&: ]+$/;
+    if (title.length < 5 || title.length > 100 || !titleRegex.test(title)) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'Invalid title. Use 5-100 characters. Allowed special chars: -, &, :' });
+    }
+
+    // 4. Year Validation
+    const yearNum = parseInt(year, 10);
+    const currentYear = new Date().getFullYear();
+    if (isNaN(yearNum) || yearNum < 2000 || yearNum > currentYear) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: `Invalid year. Must be between 2000 and ${currentYear}` });
+    }
+
+    // 5. Exam Type Validation
+    const validExams = ['A/L', 'O/L', 'University'];
+    if (!validExams.includes(examType)) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'Invalid exam type selected' });
+    }
+
+    // 6. File Validation
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'Please upload a file' });
     }
 
-    // Use absolute URL or relative path logic depending on setup. Using relative path for typical static upload directory.
+    const allowedMimeTypes = [
+      'application/pdf', 
+      'application/msword', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    if (!allowedMimeTypes.includes(req.file.mimetype)) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'Invalid file type. Only PDF and DOC/DOCX are allowed.' });
+    }
+
+    if (req.file.size < 10240 || req.file.size > 10485760) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'File size must be between 10KB and 10MB' });
+    }
+
+    const originalName = req.file.originalname;
+    if (originalName.length > 100 || !/^[a-zA-Z0-9\-_.]+$/.test(originalName)) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'File name has invalid characters or is too long.' });
+    }
+
+    // 7. Duplicate Detection
+    const existingPaper = await PastPaper.findOne({ title, subject, year: yearNum });
+    if (existingPaper) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ success: false, error: 'This past paper already exists' });
+    }
+
     const fileUrl = `/uploads/${req.file.filename}`;
 
     const paper = await PastPaper.create({
       title,
       subject,
-      year: parseInt(year, 10),
+      year: yearNum,
       examType,
       description,
       fileUrl,
-      uploadedBy: req.user._id
+      uploadedBy: req.user ? req.user._id : null
     });
 
     res.status(201).json({ success: true, data: paper });
   } catch (error) {
+    if (req.file && require('fs').existsSync(req.file.path)) {
+      require('fs').unlinkSync(req.file.path);
+    }
     next(error);
   }
 };
@@ -80,9 +183,10 @@ const updatePastPaper = async (req, res, next) => {
       return res.status(404).json({ success: false, error: 'Past paper not found' });
     }
 
-    const { title, subject, year, examType, description } = req.body;
+    const { title, subject, year, examType, description, status } = req.body;
     let updateFields = { title, subject, examType, description };
     if (year) updateFields.year = parseInt(year, 10);
+    if (status) updateFields.status = status;
 
     // Check if new file is uploaded
     if (req.file) {
