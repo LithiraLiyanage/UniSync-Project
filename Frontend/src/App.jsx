@@ -19,7 +19,6 @@ import StudentTravelSmart from './pages/StudentTravelSmart';
 import StudentSocialEvents from './pages/StudentSocialEvents';
 
 import AdminStudyBuddy from './pages/AdminStudyBuddy';
-import AdminPastPapers from './pages/AdminPastPapers';
 import AdminEarnSkills from './pages/AdminEarnSkills';
 import AdminTravelSmart from './pages/AdminTravelSmart';
 import AdminSocialEvents from './pages/AdminSocialEvents';
@@ -83,11 +82,6 @@ function App() {
             <Route path="/admin/study" element={
               <ProtectedRoute allowedRole="admin">
                 <AdminStudyBuddy />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/past-papers" element={
-              <ProtectedRoute allowedRole="admin">
-                <AdminPastPapers />
               </ProtectedRoute>
             } />
             <Route path="/admin/earn" element={

@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiBookOpen, FiPlus, FiEdit, FiTrash2, FiCheck, FiX, FiLayers, 
   FiFileText, FiUsers, FiTrendingUp, FiActivity, FiArrowRight,
-  FiAlertCircle
+  FiAlertCircle, FiDownload
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import api from '../api/axios';
 import { Line } from 'react-chartjs-2';
 import { 
   Chart as ChartJS, CategoryScale, LinearScale, PointElement, 
@@ -36,16 +37,24 @@ const AdminStudyBuddy = () => {
 
   const [activeTab, setActiveTab] = useState('dashboard');
   const [modules, setModules] = useState(initialModules);
-  const [papers, setPapers] = useState(initialPapers);
+  const [papers, setPapers] = useState([]);
   
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState({ isOpen: false, type: '', id: null });
   
   // Validation States
   const [newModule, setNewModule] = useState({ code: '', name: '', credits: '' });
   const [formErrors, setFormErrors] = useState({});
 
+  // Past Paper Form States
+  const [paperFormData, setPaperFormData] = useState({
+    title: '', subject: '', year: new Date().getFullYear(), examType: 'University', description: ''
+  });
+  const [paperFile, setPaperFile] = useState(null);
+
   useEffect(() => {
+    fetchPapers();
     // Simulate initial data loading for skeleton UI
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -53,9 +62,15 @@ const AdminStudyBuddy = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const approvePaper = (id) => {
-    setPapers(papers.map(p => p.id === id ? { ...p, status: 'Approved' } : p));
-    toast.success('Paper approved successfully');
+  const fetchPapers = async () => {
+    try {
+      const { data } = await api.get('/api/pastpapers');
+      if (data.success) {
+        setPapers(data.data);
+      }
+    } catch (error) {
+      toast.error('Failed to load past papers');
+    }
   };
 
   const confirmDeleteModule = (id) => {
@@ -66,15 +81,69 @@ const AdminStudyBuddy = () => {
     setShowConfirmModal({ isOpen: true, type: 'paper', id });
   };
 
-  const handleConfirmAction = () => {
+  const handleConfirmAction = async () => {
     if (showConfirmModal.type === 'module') {
       setModules(modules.filter(m => m.id !== showConfirmModal.id));
       toast.success('Module successfully deleted');
     } else if (showConfirmModal.type === 'paper') {
-      setPapers(papers.filter(p => p.id !== showConfirmModal.id));
-      toast.success('Paper rejected and removed');
+      try {
+        const { data } = await api.delete(`/api/pastpapers/${showConfirmModal.id}`);
+        if(data.success) {
+          setPapers(papers.filter(p => p._id !== showConfirmModal.id));
+          toast.success('Paper removed successfully');
+        }
+      } catch (error) {
+        toast.error('Failed to remove paper');
+      }
     }
     setShowConfirmModal({ isOpen: false, type: '', id: null });
+  };
+
+  const handleUploadPaper = async (e) => {
+    e.preventDefault();
+    if (!paperFile) {
+      toast.error('Please select a file');
+      return;
+    }
+
+    const allowedTypes = [
+      'application/pdf', 
+      'application/msword', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+      'image/jpeg', 
+      'image/png'
+    ];
+    if (!allowedTypes.includes(paperFile.type)) {
+      toast.error('Invalid file type. Allowed: PDF, DOC, DOCX, JPG, PNG');
+      return;
+    }
+    if (paperFile.size > 10 * 1024 * 1024) {
+      toast.error('File exceeds 10MB limit');
+      return;
+    }
+
+    const uploadData = new FormData();
+    uploadData.append('title', paperFormData.title);
+    uploadData.append('subject', paperFormData.subject);
+    uploadData.append('year', paperFormData.year);
+    uploadData.append('examType', paperFormData.examType);
+    uploadData.append('description', paperFormData.description);
+    uploadData.append('file', paperFile);
+
+    try {
+      const { data } = await api.post('/api/pastpapers', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (data.success) {
+        toast.success('Past paper uploaded successfully');
+        setShowUploadModal(false);
+        setPaperFile(null);
+        setPaperFormData({ title: '', subject: '', year: new Date().getFullYear(), examType: 'University', description: '' });
+        fetchPapers();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to upload paper');
+    }
   };
 
   const handleAddModule = () => {
@@ -412,9 +481,17 @@ const AdminStudyBuddy = () => {
         {/* --- Papers Tab --- */}
         {activeTab === 'papers' && (
           <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="space-y-6">
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm">
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white">Past Papers Review</h3>
-              <p className="text-sm text-slate-500 mt-1 font-medium">Approve or reject student uploads</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm">
+              <div>
+                <h3 className="text-xl font-bold text-slate-800 dark:text-white">Past Papers Review</h3>
+                <p className="text-sm text-slate-500 mt-1 font-medium">Approve student uploads or upload a new past paper directly</p>
+              </div>
+              <button 
+                onClick={() => setShowUploadModal(true)} 
+                className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
+              >
+                <FiPlus className="mr-2" /> Upload Past Paper
+              </button>
             </div>
             
             <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-2xl shadow-sm overflow-hidden text-slate-800 dark:text-slate-200">
@@ -431,33 +508,36 @@ const AdminStudyBuddy = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                     {papers.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors duration-200">
-                        <td className="px-6 py-4 font-bold text-slate-800 dark:text-slate-200 flex items-center gap-3">
-                          <FiFileText className="text-slate-400" size={20} />
-                          {p.title}
+                      <tr key={p._id || p.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors duration-200">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <FiFileText className="text-slate-400 shrink-0" size={20} />
+                            <div>
+                              <p className="font-bold text-slate-800 dark:text-slate-200">{p.title}</p>
+                              <p className="text-xs text-slate-500 font-medium">{p.subject || ''} {(p.subject && p.year) ? '•' : ''} {p.year || ''}</p>
+                            </div>
+                          </div>
                         </td>
-                        <td className="px-6 py-4 font-mono text-sm text-slate-500">{p.uploadedBy}</td>
-                        <td className="px-6 py-4 font-medium text-slate-500">{p.date}</td>
+                        <td className="px-6 py-4 font-mono text-sm text-slate-500">{p.uploadedBy?.name || p.uploadedBy || 'Admin'}</td>
+                        <td className="px-6 py-4 font-medium text-slate-500">{p.createdAt ? new Date(p.createdAt).toLocaleDateString() : p.date}</td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                            p.status === 'Pending' 
+                            (p.status || 'Approved') === 'Pending' 
                             ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:border-orange-800 border-orange-200' 
                             : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:border-green-800 border-green-200'
                           }`}>
-                            {p.status}
+                            {p.status || 'Approved'}
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex justify-end gap-2">
-                            {p.status === 'Pending' && (
-                              <>
-                                <button onClick={() => approvePaper(p.id)} className="p-2 text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/50 rounded-lg transition-colors" title="Approve"><FiCheck size={18} /></button>
-                                <button onClick={() => confirmRejectPaper(p.id)} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/50 rounded-lg transition-colors" title="Reject"><FiX size={18} /></button>
-                              </>
+                            {p.fileUrl && (
+                               <a href={`http://localhost:5000${p.fileUrl}`} target="_blank" rel="noopener noreferrer" className="p-2 text-slate-400 hover:text-blue-600 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Download">
+                                 <FiDownload size={18} />
+                               </a>
                             )}
-                            <button className="px-3 py-1.5 text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors inline-flex items-center gap-2">
-                              Preview
-                            </button>
+                            <button className="p-2 text-slate-400 hover:text-blue-600 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-lg transition-colors" title="Edit"><FiEdit size={18} /></button>
+                            <button onClick={() => confirmRejectPaper(p._id || p.id)} className="p-2 text-slate-400 hover:text-red-600 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/40 rounded-lg transition-colors" title="Delete"><FiTrash2 size={18} /></button>
                           </div>
                         </td>
                       </tr>
