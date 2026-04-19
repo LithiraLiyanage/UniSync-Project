@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   FiUsers, FiDollarSign, FiCalendar, FiAlertCircle,
   FiArrowRight, FiCheckCircle, FiClock, FiXCircle,
-  FiSun, FiMoon, FiBookOpen, FiTrendingUp, FiMapPin
+  FiSun, FiMoon, FiBookOpen, FiTrendingUp, FiMapPin, FiFileText
 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
@@ -58,6 +58,17 @@ const modules = [
     darkGrad: 'bg-gradient-to-br from-pink-900/40 to-orange-900/40',
     iconColorLight: 'text-pink-600',
     iconColorDark: 'text-orange-400',
+  },
+  {
+    id: 5, title: 'Past Papers Library', desc: 'Secure past papers archive', link: '/admin/past-papers',
+    color: '#2563eb',
+    darkBg: 'rgba(37,99,235,0.1)', lightBg: '#eff6ff',
+    darkBorder: 'rgba(37,99,235,0.25)', lightBorder: '#bfdbfe',
+    icon: FiFileText,
+    lightGrad: 'bg-gradient-to-br from-blue-100 to-indigo-100',
+    darkGrad: 'bg-gradient-to-br from-blue-900/40 to-indigo-900/40',
+    iconColorLight: 'text-blue-600',
+    iconColorDark: 'text-indigo-400',
   },
 ];
 

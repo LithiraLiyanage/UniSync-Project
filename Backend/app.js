@@ -59,6 +59,11 @@ const progressRoutes = require('./routes/progressRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
 
+const pastPaperRoutes = require('./routes/pastPaperRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+
+app.use('/api/pastpapers', pastPaperRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use('/api/papers', paperRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/listings', listingRoutes);
