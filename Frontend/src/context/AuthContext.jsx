@@ -80,28 +80,9 @@ export const AuthContextProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/register', { ...userData, role });
       
-      const userPayload = data.data;
-      const tkn = userPayload.token;
-
-      // Auto login after success
-      setToken(tkn);
-      setUser(userPayload);
-      localStorage.setItem('token', tkn);
-      localStorage.setItem('role', role);
-      const resData = data.data;
-      const userRole = resData.role;
-
-      // Auto login after success
-      setToken(resData.token);
-      setUser(resData);
-      localStorage.setItem('token', resData.token);
-      localStorage.setItem('role', userRole);
-      
-      if (userRole === 'student') {
-        navigate('/dashboard');
-      } else if (userRole === 'admin') {
-        navigate('/admin/dashboard');
-      }
+      // Don't auto login after registration, redirect to login page
+      toast.success('Registration successful! Please login to continue.');
+      navigate('/login');
       
       return data;
     } catch (error) {

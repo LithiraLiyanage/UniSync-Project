@@ -58,12 +58,14 @@ const eventRoutes = require('./routes/eventRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
+const personalEventRoutes = require('./routes/personalEventRoutes');
 
 app.use('/api/papers', paperRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api', travelRoutes); // Note: handles /api/routes and /api/alerts
 app.use('/api/events', eventRoutes);
+app.use('/api/personal-events', personalEventRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/resources', resourceRoutes);

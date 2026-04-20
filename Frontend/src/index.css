@@ -49,6 +49,37 @@
     @apply font-sans antialiased;
     background-color: var(--bg);
     color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Fix for blank white pages during browser back navigation */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Prevent content from disappearing on back navigation */
+  .fade-enter {
+    opacity: 0;
+  }
+
+  .fade-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in;
+  }
+
+  .fade-exit {
+    opacity: 1;
+  }
+
+  .fade-exit-active {
+    opacity: 0;
+    transition: opacity 300ms ease-in;
   }
 }
 

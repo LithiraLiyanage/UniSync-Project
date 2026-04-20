@@ -56,7 +56,7 @@ const modules = [
   {
     id: 4, title: 'Social & Events',
     description: 'Connect with peers, join clubs & discover campus events',
-    icon: FiUsers, link: '/events',
+    icon: FiUsers, link: '/event-dashboard',
     gradient: 'linear-gradient(135deg, #9d174d, #db2777)',
     lightGradient: 'linear-gradient(135deg, #db2777, #ec4899)',
     glow: 'rgba(219,39,119,0.35)', lightGlow: 'rgba(219,39,119,0.18)',

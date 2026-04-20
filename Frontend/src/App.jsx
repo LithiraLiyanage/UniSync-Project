@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthContextProvider } from './context/AuthContext';
+import { EventsProvider } from './context/EventsContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 
@@ -21,7 +22,7 @@ import StudentSocialEvents from './pages/StudentSocialEvents';
 import AdminStudyBuddy from './pages/AdminStudyBuddy';
 import AdminEarnSkills from './pages/AdminEarnSkills';
 import AdminTravelSmart from './pages/AdminTravelSmart';
-import AdminSocialEvents from './pages/AdminSocialEvents';
+import AdminSocialEventsFinal from './pages/AdminSocialEventsFinal';
 
 // ✅ Feature preview pages (public)
 import FeatureStudyLearning from './pages/FeatureStudyLearning';
@@ -33,12 +34,12 @@ import EventDashboard from "./pages/eventFeature/Dashboard";
 import Events from "./pages/eventFeature/Events";
 import Social from "./pages/eventFeature/Social";
 import Calendar from "./pages/eventFeature/Calendar";
-import Chat from "./pages/eventFeature/Chat";
 
 
 function App() {
   return (
     <AuthContextProvider>
+      <EventsProvider>
       <div className="min-h-screen flex flex-col m-0 p-0 font-sans text-gray-900 bg-white">
         <Navbar />
         <main className="flex-grow flex flex-col relative">
@@ -103,7 +104,7 @@ function App() {
             } />
             <Route path="/admin/events" element={
               <ProtectedRoute allowedRole="admin">
-                <AdminSocialEvents />
+                <AdminSocialEventsFinal />
               </ProtectedRoute>
             } />
 
@@ -111,7 +112,6 @@ function App() {
             <Route path="/event-feature/events" element={<Events />} />
             <Route path="/event-feature/social" element={<Social />} />
             <Route path="/event-feature/calendar" element={<Calendar />} />
-            <Route path="/event-feature/chat" element={<Chat />} />
 
 
             <Route path="*" element={<NotFound />} />
@@ -128,6 +128,7 @@ function App() {
           }} 
         />
       </div>
+      </EventsProvider>
     </AuthContextProvider>
   );
 }
