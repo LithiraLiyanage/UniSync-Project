@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FeatureNav from "./FeatureNav";
 
 const initialMessages = [
   { id: 1, sender: "Nimal", text: "Hey, are you coming to the AI Workshop?" },

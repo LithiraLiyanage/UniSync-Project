@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FeatureNav from "./FeatureNav";
 
 const users = [
   { id: 1, name: "Nimal", interests: ["AI", "Coding"] },

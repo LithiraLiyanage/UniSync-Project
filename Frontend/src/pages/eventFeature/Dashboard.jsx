@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import FeatureNav from "./FeatureNav";
 
 const Dashboard = () => {
   const navigate = useNavigate();

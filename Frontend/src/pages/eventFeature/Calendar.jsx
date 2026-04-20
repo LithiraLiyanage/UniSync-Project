@@ -1,5 +1,5 @@
 import React from "react";
-
+import FeatureNav from "./FeatureNav";
 const calendarEvents = [
   { id: 1, title: "AI Workshop", date: "2026-05-10", time: "10:00 AM", location: "Lab 1" },
   { id: 2, title: "Music Night", date: "2026-05-12", time: "6:00 PM", location: "Main Ground" },
