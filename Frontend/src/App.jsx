@@ -29,6 +29,9 @@ import FeatureEarnSkills    from './pages/FeatureEarnSkills';
 import FeatureTravelSmart   from './pages/FeatureTravelSmart';
 import FeatureSocialEvents  from './pages/FeatureSocialEvents';
 
+import EventDashboard from "./pages/eventFeature/Dashboard";
+
+
 function App() {
   return (
     <AuthContextProvider>
@@ -99,7 +102,10 @@ function App() {
                 <AdminSocialEvents />
               </ProtectedRoute>
             } />
-            
+
+            <Route path="/event-dashboard" element={<EventDashboard />} />
+
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
