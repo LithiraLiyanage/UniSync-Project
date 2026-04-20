@@ -138,17 +138,8 @@ npm run dev
 MONGO_URI=your_uri
 JWT_SECRET=your_secret
 OPENAI_API_KEY=your_key
+
 ```
-
----
-
-## 🎨 UI Preview
-
-<p align="center">
-  🚧 Add your screenshots or GIF demo here 🚧
-</p>
-
----
 
 ## ✨ Features Summary
 
@@ -174,7 +165,9 @@ OPENAI_API_KEY=your_key
 ## 👨‍💻 Author
 
 **Lithira Liyanage** 🚀
+
 📊 Year 3 Semester 1
+
 🎓 Faculty of Computing
 
 ---
