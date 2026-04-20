@@ -31,6 +31,7 @@ import FeatureSocialEvents  from './pages/FeatureSocialEvents';
 
 import EventDashboard from "./pages/eventFeature/Dashboard";
 import Events from "./pages/eventFeature/Events";
+import Social from "./pages/eventFeature/Social";
 
 
 function App() {
@@ -106,6 +107,7 @@ function App() {
 
             <Route path="/event-dashboard" element={<EventDashboard />} />
             <Route path="/event-feature/events" element={<Events />} />
+            <Route path="/event-feature/social" element={<Social />} />
 
 
             <Route path="*" element={<NotFound />} />
