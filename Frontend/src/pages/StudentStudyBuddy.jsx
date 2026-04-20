@@ -46,18 +46,14 @@ const StudentStudyBuddy = () => {
     setIsLoadingPapers(true);
     try {
       const { data } = await api.get('/api/pastpapers');
-      if (data && data.success) {
-        const payloadData = data.data || [];
-        setPapers(payloadData.filter(p => p.status === 'Approved' || !p.status));
-      } else {
-         const directPayload = Array.isArray(data) ? data : [];
-         setPapers(directPayload.filter(p => p.status === 'Approved' || !p.status));
-      }
+      const payloadData = Array.isArray(data) ? data : (data?.data || []);
+      setPapers(payloadData.filter(p => p.status === 'Approved' || !p.status));
       setError(false);
-      setIsLoadingPapers(false);
     } catch (err) {
       console.error("API ERROR:", err);
+      setPapers([]);
       setError(true);
+    } finally {
       setIsLoadingPapers(false);
     }
   };
@@ -160,7 +156,7 @@ const StudentStudyBuddy = () => {
               ) : error ? (
                 <div className="col-span-full text-center text-red-500 font-bold py-8">Failed to load past papers.</div>
               ) : papers.length === 0 ? (
-                <div className="col-span-full text-center text-muted py-8">No Past Papers</div>
+                <div className="col-span-full text-center text-muted py-8">No Past Papers Available</div>
               ) : (
                 papers.map((p) => (
                   <div key={p.id || p._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm hover:shadow-md transition-all group flex flex-col justify-between">
