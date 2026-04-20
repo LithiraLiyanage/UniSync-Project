@@ -78,14 +78,11 @@ University students face a fragmented campus experience:
 
 ---
 
-🏗️ System Architecture
+## 🏗️ System Architecture  
 
-graph TD
-A[React Frontend] --> B[Express Backend]
-B --> C[MongoDB Atlas]
-B --> D[OpenAI API]
-B --> E[Socket.io]
-B --> F[Google Maps API]
+<p align="center">
+  <img src="./assets/system-architecture.png" alt="System Architecture Diagram" width="800"/>
+</p>
 
 ---
 
@@ -100,7 +97,7 @@ B --> F[Google Maps API]
 
 ---
 
-⚙️ Installation
+## ⚙️ Installation
 
 # Clone repository
 git clone https://github.com/your-username/unisync.git
@@ -121,7 +118,7 @@ npm run dev
 
 ---  
 
-🔐 Environment Variables
+## 🔐 Environment Variables
 
 Create a .env file in the server folder:
 
@@ -132,7 +129,7 @@ Create a .env file in the server folder:
 
 --- 
 
-👥 Team
+## 👥 Team
 
 - 👤 L D Liyanage – Study Module
 - 👤 L I U Peiris – Marketplace
@@ -141,7 +138,7 @@ Create a .env file in the server folder:
 
 ---
 
-📈 Future Improvements
+## 📈 Future Improvements
 
 - 📱 Mobile app (React Native)
 - 🤖 Advanced AI features
@@ -151,7 +148,7 @@ Create a .env file in the server folder:
 
 ----
 
-If you like this project:
+## If you like this project:
 
 - ⭐ Star the repository
 - 📢 Share with others
