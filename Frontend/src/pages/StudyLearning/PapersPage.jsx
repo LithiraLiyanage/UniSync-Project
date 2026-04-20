@@ -150,11 +150,17 @@ const PapersPage = ({ isDark = false }) => {
 
   const fetchPapers = async () => {
     try {
+      setLoading(true);
       const res = await api.get('/api/papers');
-      setPapers(res.data.data.length === 0 ? defaultPapers : res.data.data);
-    } catch {
+      if (res.data && res.data.data && res.data.data.length > 0) {
+        setPapers(res.data.data);
+      } else {
+        setPapers(defaultPapers);
+      }
+    } catch (error) {
+      console.error('Error fetching past papers:', error);
       toast.error('Failed to load past papers');
-      setPapers(defaultPapers);
+      setPapers(defaultPapers); // Fallback to default ones
     } finally {
       setLoading(false);
     }
