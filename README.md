@@ -66,4 +66,97 @@ University students face a fragmented campus experience:
 ---
 
 ## 🧠 Tech Stack  
+- Frontend : React.js
+- Backend : Node.js + Express.js
+- Database : MongoDB Atlas
+- Auth : JWT Authentication
+- Realtime : Socket.io
+- AI : OpenAI API
+- Maps : Google Maps API
+- Testing : Cypress
+- Charts : Chart.js
+
+---
+
+🏗️ System Architecture
+
+graph TD
+A[React Frontend] --> B[Express Backend]
+B --> C[MongoDB Atlas]
+B --> D[OpenAI API]
+B --> E[Socket.io]
+B --> F[Google Maps API]
+
+---
+
+🚀 Features
+- ✅ AI-powered smart campus system
+- ✅ Real-time notifications
+- ✅ Secure authentication (JWT)
+- ✅ Marketplace with integrity filtering
+- ✅ Transport tracking system
+- ✅ Event management + social matching
+- ✅ Responsive modern UI
+
+---
+
+⚙️ Installation
+
+# Clone repository
+git clone https://github.com/your-username/unisync.git
+
+# Go into project
+cd unisync
+
+# Install frontend
+cd client
+npm install
+
+# Install backend
+cd ../server
+npm install
+
+# Run project
+npm run dev
+
+---  
+
+🔐 Environment Variables
+
+Create a .env file in the server folder:
+
+- MONGO_URI=your_mongodb_uri
+- JWT_SECRET=your_secret_key
+- OPENAI_API_KEY=your_api_key
+- GOOGLE_MAPS_API_KEY=your_key
+
+--- 
+
+👥 Team
+
+- 👤 L D Liyanage – Study Module
+- 👤 L I U Peiris – Marketplace
+- 👤 K S D De Silva – Transport
+- 👤 W A D S Wijesinghe – Events
+
+---
+
+📈 Future Improvements
+
+- 📱 Mobile app (React Native)
+- 🤖 Advanced AI features
+- 📊 Analytics dashboard
+- 🔗 University integrations
+- ⭐ Support
+
+----
+
+If you like this project:
+
+- ⭐ Star the repository
+- 📢 Share with others
+- 🤝 Contribute
+
+
+
 
