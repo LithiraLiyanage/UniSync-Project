@@ -164,7 +164,7 @@ OPENAI_API_KEY=your_key
 
 ## 👨‍💻 Author
 
-👨‍🎓**Lithira Liyanage** 🚀
+👨‍🎓 **Lithira Liyanage** 🚀
 
 📊 Year 3 Semester 1
 
