@@ -13,7 +13,10 @@
 
 ---
 
-## 🌟 Overview  
+## 🌟 Overview
+
+![App Preview Animation](https://media.giphy.com/media/l0HlNaQ6gWfllcjDO/giphy.gif)
+
 **UniSync** is an all-in-one Smart Campus Platform that integrates academic, social, and daily student activities into one intelligent ecosystem.
 
 💡 One platform to manage studies, transport, earnings, and campus life efficiently.
